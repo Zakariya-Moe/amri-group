@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Tooling / deploy
+.vercel/
+node_modules/
+
+# Environment — never commit secrets
+.env
+.env.*

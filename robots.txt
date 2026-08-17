@@ -1,0 +1,8 @@
+# AMRI Group — production robots
+User-agent: *
+Allow: /
+
+# LAUNCH TODO: production domain unconfirmed. Once the real domain is live,
+# replace the line below with the absolute sitemap URL, e.g.
+#   Sitemap: https://<confirmed-domain>/sitemap.xml
+Sitemap: /sitemap.xml

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AMRI Group sitemap.
+  Single-page site: only the routes that actually exist are listed.
+  LAUNCH TODO: <loc> uses a relative-safe placeholder host. Replace
+  PRODUCTION_DOMAIN with the confirmed domain before submitting to
+  Google Search Console. Dedicated /work/<project>/ pages get added
+  here only when those pages genuinely exist.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://PRODUCTION_DOMAIN/</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
