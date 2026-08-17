@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMRI Group — ALT-A · Art-direction study</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="EXPERIMENT — alternate art direction for AMRI Group. Not production.">
+<meta name="theme-color" content="#17171A">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- NOTE: Fontshare's combined multi-family endpoint returns ONLY the first family.
+     Requesting both in one URL silently drops Clash Grotesk. Two links, always. -->
+<link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500,600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+/* theme boot — set before first paint so there is never a flash */
+(function(){try{var s=localStorage.getItem("amri-theme");var d=window.matchMedia("(prefers-color-scheme: dark)").matches;var t=s?s:(d?"dark":"light");document.documentElement.setAttribute("data-theme",t);document.documentElement.setAttribute("data-theme-mode",s?s:"system");}catch(e){document.documentElement.setAttribute("data-theme","light");}})();
+</script>
+<style>
+/* ==========================================================================
+   AMRI GROUP · ALT-A — art-direction study
+   Same palette, same three typefaces, same architectural vocabulary as
+   production. What changes is scale, composition and tonal sequencing.
+   EXPERIMENT ONLY — not merged, not production.
+   ========================================================================== */
+
+:root{
+  /* ---- constants — unchanged from production ---- */
+  --c-ink:#131316;
+  --c-ink2:#26262B;
+  --c-ivory:#F0EBE1;
+  --c-ivory2:#F7F4EE;
+  --red:#781F2A;
+  --red-deep:#5E1821;
+  --red-soft:#8E3540;
+
+  color-scheme:light;
+  --ink:#131316;
+  --ink-soft:#26262B;
+  --paper:#F0EBE1;
+  --paper-2:#F7F4EE;
+  --accent:var(--red);
+
+  --line:rgba(19,19,22,0.16);
+  --line-2:rgba(19,19,22,0.30);
+  --muted:rgba(19,19,22,0.58);
+  --muted-2:rgba(19,19,22,0.40);
+
+  --shadow:rgba(19,19,22,.35);
+  --scrim:247,244,238;
+  --hero-2:rgba(19,19,22,0.70);
+
+  --atmo-light:rgba(255,251,240,.92);
+  --atmo-warm:rgba(120,31,42,.055);
+  --atmo-mineral:rgba(122,132,148,.07);
+  --atmo-vignette:rgba(19,19,22,.05);
+
+  /* ---- band tokens — dark in BOTH themes ---- */
+  --band:#131316;
+  --band-2:#26262B;
+  --band-fg:#F0EBE1;
+  --line-inv:rgba(240,235,225,0.16);
+  --line-inv-2:rgba(240,235,225,0.30);
+  --muted-inv:rgba(240,235,225,0.58);
+  --muted-inv-2:rgba(240,235,225,0.40);
+
+  /* ---- the oxblood field — ALT-A's one saturated moment ---- */
+  --field:var(--red);
+  --field-fg:#F5F0E6;
+  --field-muted:rgba(245,240,230,0.62);
+  --field-line:rgba(245,240,230,0.22);
+
+  --gutter:clamp(20px,5vw,72px);
+  --sans:"Switzer","Helvetica Neue",Arial,sans-serif;
+  --arch:"Clash Grotesk","Switzer","Helvetica Neue",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --ease-slow:cubic-bezier(.16,.8,.24,1);
+}
+
+[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#F0EBE1;
+  --ink-soft:#E6E0D3;
+  --paper:#17171A;
+  --paper-2:#1E1E22;
+  --accent:var(--red-soft);
+
+  --line:rgba(240,235,225,0.13);
+  --line-2:rgba(240,235,225,0.26);
+  --muted:rgba(240,235,225,0.60);
+  --muted-2:rgba(240,235,225,0.40);
+
+  --shadow:rgba(0,0,0,.55);
+  --scrim:30,30,34;
+  --hero-2:rgba(240,235,225,0.68);
+
+  --atmo-light:rgba(240,235,225,.045);
+  --atmo-warm:rgba(142,53,64,.13);
+  --atmo-mineral:rgba(120,140,170,.05);
+  --atmo-vignette:rgba(0,0,0,.55);
+
+  --band:#0F0F12;
+  --band-2:#1A1A1F;
+
+  /* the gallery at night: the field sinks rather than glares */
+  --field:var(--red-deep);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:clip}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-weight:400;line-height:1.6;
+  letter-spacing:-0.003em;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.lock{overflow:hidden}
+html.theme-anim body{transition:background-color .45s var(--ease),color .45s var(--ease)}
+img{display:block;max-width:100%}
+a{color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--gutter)}
+.wrap-wide{max-width:1520px;margin:0 auto;padding:0 var(--gutter)}
+
+/* ---------- type primitives ---------- */
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.num{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;color:var(--muted-2)}
+h1,h2,h3{font-family:var(--arch);font-weight:500;line-height:1.02;letter-spacing:-0.02em}
+p{max-width:62ch}
+.lede{font-size:clamp(17px,2vw,22px);line-height:1.48;letter-spacing:-0.01em;max-width:54ch}
+.body-muted{color:var(--muted);max-width:60ch}
+strong,b{font-weight:600}
+.tick{color:var(--accent)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--paper);padding:10px 18px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;z-index:200}
+.skip:focus{left:0}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.wordmark{display:inline-flex;flex-direction:column;line-height:1;text-decoration:none}
+.wordmark .wm-a{font-family:var(--arch);font-weight:500;letter-spacing:0.14em}
+.wordmark .wm-g{font-family:var(--mono);font-weight:500;letter-spacing:0.62em;text-transform:uppercase;color:var(--muted);margin-top:.42em;padding-left:.08em}
+
+/* ---------- experiment ribbon ---------- */
+.exp-flag{
+  position:fixed;left:0;bottom:0;z-index:150;
+  background:var(--accent);color:#F5F0E6;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  padding:7px 14px;pointer-events:none;
+}
+
+/* ---------- header ---------- */
+header.masthead{
+  position:sticky;top:0;z-index:60;
+  background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:saturate(120%) blur(10px);
+  border-bottom:1px solid transparent;transition:border-color .35s var(--ease);
+}
+header.masthead.scrolled{border-bottom-color:var(--line)}
+header.masthead .wrap-wide{display:flex;align-items:center;justify-content:space-between;gap:24px;height:64px}
+.brand{text-decoration:none;font-family:var(--arch);font-weight:500;font-size:14px;letter-spacing:0.2em}
+.primary{display:flex;align-items:center;gap:clamp(14px,2vw,30px)}
+@media(max-width:900px){.primary{display:none}}
+.nl{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .25s var(--ease)}
+.nl:hover{color:var(--ink)}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--ink);color:var(--paper);border:1px solid var(--ink);
+  font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+  padding:12px 22px;text-decoration:none;cursor:pointer;
+  transition:background .25s var(--ease),border-color .25s var(--ease),color .25s var(--ease);
+}
+.cta-btn:hover{background:var(--accent);border-color:var(--accent);color:#F5F0E6}
+.cta-btn.on-dark{background:var(--c-ivory);color:var(--c-ink);border-color:var(--c-ivory)}
+.cta-btn.on-dark:hover{background:var(--red-soft);border-color:var(--red-soft);color:#F5F0E6}
+.ghost-btn{
+  display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;
+  letter-spacing:0.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;
+  padding:12px 22px;border:1px solid var(--line-2);transition:border-color .25s var(--ease)
+}
+.ghost-btn:hover{border-color:var(--ink)}
+.theme-btn{background:none;border:0;cursor:pointer;color:var(--muted);padding:4px;line-height:0;transition:color .25s var(--ease)}
+.theme-btn:hover{color:var(--ink)}
+.theme-btn svg{width:19px;height:19px}
+.theme-btn .ti-sun,.theme-btn .ti-moon{transition:opacity .35s var(--ease),transform .5s var(--ease);transform-origin:12px 12px}
+.theme-btn .ti-moon{opacity:0;transform:rotate(-55deg) scale(.55)}
+[data-theme="dark"] .theme-btn .ti-sun{opacity:0;transform:rotate(55deg) scale(.55)}
+[data-theme="dark"] .theme-btn .ti-moon{opacity:1;transform:none}
+.sys-link{background:none;border:0;padding:4px 0;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-2);transition:color .25s var(--ease)}
+.sys-link:hover{color:var(--ink)}
+.sys-link[aria-pressed="true"]{cursor:default;text-decoration:underline;text-underline-offset:4px}
+.menu-btn{display:none;background:none;border:0;cursor:pointer;padding:8px;flex-direction:column;gap:5px}
+@media(max-width:900px){.menu-btn{display:flex}}
+.menu-btn .bar{width:24px;height:1.5px;background:var(--ink);display:block}
+
+.mnav{position:fixed;inset:0;z-index:100;background:var(--paper);padding:24px var(--gutter) 40px;display:flex;flex-direction:column;transform:translateY(-100%);transition:transform .5s var(--ease-slow);visibility:hidden}
+.mnav.open{transform:none;visibility:visible}
+.mnav-top{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.mnav-top .bw{font-family:var(--arch);font-weight:500;letter-spacing:0.2em;font-size:14px}
+.mnav-close{background:none;border:0;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.18em;color:var(--ink)}
+.mnav ul{list-style:none;margin-top:20px;flex:1}
+.mnav li{border-bottom:1px solid var(--line)}
+.mnav li a{display:flex;align-items:baseline;gap:18px;padding:20px 0;text-decoration:none;font-family:var(--arch);font-weight:500;font-size:clamp(26px,7vw,38px);letter-spacing:-0.02em}
+.mnav li a .k{font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;color:var(--muted-2)}
+.mnav .appearance{display:flex;align-items:center;gap:14px;margin-top:26px}
+.mnav .ap-l{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-2)}
+.mfoot{margin-top:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-2)}
+
+/* ==========================================================================
+   SECTION SCAFFOLD — the chapter device
+   The production section number (11px mono) is PROMOTED to an architectural
+   numeral. Same information, an order of magnitude more presence. This is
+   the single change that turns eleven modules into nine chapters.
+   ========================================================================== */
+.sec{padding:clamp(84px,11vw,168px) 0;position:relative}
+.sec + .sec{border-top:1px solid var(--line)}
+.dark-sec{background:var(--band);color:var(--band-fg);border-top:0!important}
+.dark-sec .lede,.dark-sec .body-muted{color:var(--muted-inv)}
+.dark-sec .eyebrow{color:var(--muted-inv)}
+.dark-sec ::selection{background:var(--band-fg);color:var(--band)}
+
+.chapter{display:grid;grid-template-columns:clamp(150px,17vw,260px) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:start;margin-bottom:clamp(44px,6vw,84px)}
+.ch-mark{position:relative;padding-top:.06em}
+.ch-no{
+  font-family:var(--arch);font-weight:500;line-height:.78;letter-spacing:-0.04em;
+  font-size:clamp(56px,7.4vw,120px);color:var(--ink);
+}
+.dark-sec .ch-no{color:var(--band-fg)}
+.ch-label{
+  display:block;margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--muted-2);border-top:1px solid var(--line);padding-top:14px;max-width:16ch;
+}
+.dark-sec .ch-label{color:var(--muted-inv-2);border-top-color:var(--line-inv)}
+.chapter h2{font-size:clamp(34px,5.4vw,72px);max-width:16ch;letter-spacing:-0.028em;line-height:0.99}
+.chapter .lede{margin-top:clamp(20px,2.4vw,30px);color:var(--muted)}
+.dark-sec .chapter .lede{color:var(--muted-inv)}
+@media(max-width:820px){
+  .chapter{grid-template-columns:1fr;gap:18px}
+  .ch-mark{display:flex;align-items:baseline;gap:18px}
+  .ch-no{font-size:clamp(44px,13vw,64px)}
+  .ch-label{margin-top:0;border-top:0;padding-top:0;max-width:none}
+}
+
+/* ---------- reveal motion ---------- */
+.reveal{opacity:0;transform:translateY(20px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .8s var(--ease-slow),transform .8s var(--ease-slow)}
+.reveal.d1.in{transition-delay:.09s}.reveal.d2.in{transition-delay:.18s}.reveal.d3.in{transition-delay:.27s}
+.no-io .reveal{opacity:1;transform:none}
+
+/* ==========================================================================
+   01 · HERO — THE APERTURE
+   Line one at full architectural scale. A full-bleed slot cut through the
+   page showing four real project crops. Line two at 60% scale, right-set.
+   The work physically occupies the gap between the two halves of the
+   sentence — "grew" and "should too" are separated by the proof.
+   ========================================================================== */
+.hero{position:relative;overflow:clip;padding:clamp(56px,8vw,104px) 0 0}
+.hero::before{
+  content:"";position:absolute;inset:-24% -14% 40%;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 84% 58% at 82% 0%,  var(--atmo-light),   transparent 62%),
+    radial-gradient(ellipse 54% 46% at 6% 88%,  var(--atmo-warm),    transparent 66%),
+    radial-gradient(ellipse 62% 70% at 32% 26%, var(--atmo-mineral), transparent 58%),
+    radial-gradient(ellipse 126% 110% at 50% 42%, transparent 52%, var(--atmo-vignette) 100%);
+}
+.hero .wrap-wide{position:relative;z-index:1}
+.hero-meta{
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);
+  padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:clamp(32px,5vw,60px);
+}
+.hero h1{margin:0;font-size:clamp(46px,11.2vw,152px);line-height:0.86;letter-spacing:-0.038em}
+.hero .hl1{display:block;max-width:14ch}
+.hero .hl2{
+  display:block;margin-left:auto;text-align:right;max-width:15ch;
+  font-size:clamp(30px,6.6vw,92px);line-height:0.9;letter-spacing:-0.03em;color:var(--hero-2);
+}
+/* word assembly — the production mechanic, retimed for the larger scale */
+.aw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.awi{display:inline-block;transform:translate(var(--ax,0),var(--ay,110%)) rotate(var(--ar,0deg));will-change:transform}
+.hero.go .awi{transform:none;transition:transform 1s var(--ease-slow)}
+.hero.go .hl1 .awi{transition-duration:.78s}
+.hero.go [data-d="1"]{transition-delay:.05s}
+.hero.go [data-d="2"]{transition-delay:.13s}
+.hero.go [data-d="3"]{transition-delay:.9s}
+.hero.go [data-d="4"]{transition-delay:.98s}
+.hero.go [data-d="5"]{transition-delay:1.06s}
+.hero.go [data-d="6"]{transition-delay:1.14s}
+
+/* the aperture — full-bleed slot of real work */
+.aperture{
+  position:relative;z-index:1;margin:clamp(26px,4vw,52px) 0 clamp(24px,3.4vw,44px);
+  width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.ap-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);height:clamp(148px,23vh,272px)}
+.ap-cell{position:relative;overflow:hidden;background:var(--paper-2)}
+.ap-cell img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transform:scale(1.14) translateX(calc(var(--gp,0) * -14px));will-change:transform;
+}
+.ap-cell::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--scrim),.20),rgba(var(--scrim),0) 42%,rgba(var(--scrim),.14))}
+/* the mask opens on load — one gesture, then still */
+.aperture{clip-path:inset(50% 0 50% 0)}
+.hero.go .aperture{clip-path:inset(0 0 0 0);transition:clip-path 1.15s var(--ease-slow) .42s}
+.ap-ledger{
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:13px 0;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.17em;text-transform:uppercase;color:var(--muted-2);
+}
+.ap-ledger .n{color:var(--muted)}
+@media(max-width:760px){
+  .ap-strip{grid-template-columns:repeat(2,1fr);height:clamp(132px,20vh,180px)}
+  .ap-cell:nth-child(n+3){display:none}
+  .ap-ledger{font-size:9.5px;letter-spacing:0.13em}
+}
+
+.hero-low{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:end;padding-bottom:clamp(56px,8vw,104px)}
+@media(max-width:820px){.hero-low{grid-template-columns:1fr;gap:26px}}
+.hero-low .lede{color:var(--ink)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+@media(min-width:821px){.hero-actions{justify-content:flex-end}}
+.hero-fade{opacity:0;transform:translateY(14px)}
+.hero.go .hero-fade{opacity:1;transform:none;transition:opacity .8s var(--ease) 1.3s,transform .8s var(--ease) 1.3s}
+.hero.go .hero-fade.f2{transition-delay:1.44s}
+
+/* ==========================================================================
+   02 · THE GAP — the audit ledger, amplified
+   The interaction is production's and is not touched. Only the scale of the
+   surrounding composition changes.
+   ========================================================================== */
+.problem-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,6vw,88px);align-items:start}
+@media(max-width:900px){.problem-grid{grid-template-columns:1fr;gap:40px}}
+.problem-copy p{color:var(--muted);font-size:16px;line-height:1.6}
+.problem-copy p+p{margin-top:18px}
+.problem-copy .big-claim{
+  font-family:var(--arch);font-weight:500;font-size:clamp(22px,3vw,34px);
+  line-height:1.2;letter-spacing:-0.018em;max-width:22ch;margin-top:32px;color:var(--ink);
+}
+.ledger{border:1px solid var(--line);background:var(--paper-2)}
+.ledger-head{
+  display:flex;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-2);
+}
+.ledger-row{
+  display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  padding:14px 18px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:clamp(11px,1.25vw,13px);letter-spacing:0.09em;
+  opacity:0;transition:opacity .6s var(--ease-slow),transform .7s var(--ease-slow);
+}
+.ledger-row:last-child{border-bottom:0}
+.ledger .lk{text-transform:uppercase;letter-spacing:0.16em;color:var(--ink)}
+.ledger .lv{color:var(--muted-2);text-align:right}
+.ledger .lv.flag{color:var(--accent)}
+.ledger:not(.set) .ledger-row:nth-child(2){transform:translate(-26px,10px) rotate(-.7deg)}
+.ledger:not(.set) .ledger-row:nth-child(3){transform:translate(30px,-8px) rotate(.5deg)}
+.ledger:not(.set) .ledger-row:nth-child(4){transform:translate(-34px,12px) rotate(.8deg)}
+.ledger:not(.set) .ledger-row:nth-child(5){transform:translate(24px,-12px) rotate(-.5deg)}
+.ledger:not(.set) .ledger-row:nth-child(6){transform:translate(-30px,-6px) rotate(-.6deg)}
+.ledger:not(.set) .ledger-row:nth-child(7){transform:translate(18px,9px) rotate(.35deg)}
+.ledger:not(.set) .ledger-row:nth-child(8){transform:translate(-22px,-9px) rotate(-.45deg)}
+.ledger:not(.set) .ledger-row:nth-child(9){transform:translate(28px,7px) rotate(.55deg)}
+.ledger.set .ledger-row{opacity:1;transform:none}
+.ledger.set .ledger-row:nth-child(3){transition-delay:.06s}
+.ledger.set .ledger-row:nth-child(4){transition-delay:.12s}
+.ledger.set .ledger-row:nth-child(5){transition-delay:.18s}
+.ledger.set .ledger-row:nth-child(6){transition-delay:.24s}
+.ledger.set .ledger-row:nth-child(7){transition-delay:.30s}
+.ledger.set .ledger-row:nth-child(8){transition-delay:.36s}
+.ledger.set .ledger-row:nth-child(9){transition-delay:.42s}
+
+/* ==========================================================================
+   03 · THREE SITUATIONS — production content, wider air
+   ========================================================================== */
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(max-width:880px){.paths{grid-template-columns:1fr}}
+.path{background:var(--paper);padding:clamp(30px,3.6vw,52px);display:flex;flex-direction:column;transition:background .35s var(--ease)}
+@media(hover:hover) and (pointer:fine){.path:hover{background:var(--paper-2)}}
+.path .p-idx{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--muted-2);display:flex;align-items:center;gap:10px}
+.path .p-idx::after{content:"";height:1px;flex:1;background:var(--line);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.path.in .p-idx::after,.no-io .path .p-idx::after{transform:scaleX(1)}
+.path h3{font-size:clamp(26px,3vw,36px);letter-spacing:0.05em;margin:28px 0 14px;text-transform:uppercase}
+.path .p-sit{font-size:15.5px;line-height:1.5;color:var(--muted);min-height:3.2em}
+.path ul{list-style:none;margin:28px 0 34px;border-top:1px solid var(--line)}
+.path li{font-size:14.5px;color:var(--muted);padding:11px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+.path li::after{content:"";width:4px;height:4px;background:var(--line-2);align-self:center;flex:none;transition:background .3s var(--ease)}
+.path:hover li::after{background:var(--accent)}
+.path .p-link{margin-top:auto;font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:6px 0}
+.path .p-link .arr{transition:transform .25s var(--ease)}
+.path .p-link:hover{color:var(--accent)}
+.path .p-link:hover .arr{transform:translateX(5px)}
+.paths-note{margin-top:26px;font-size:15px;color:var(--muted);max-width:70ch}
+
+/* ==========================================================================
+   04 · SELECTED WORK — THE EXHIBITION
+   Four walls, not four cards. Each project keeps its own tonal world; the
+   AMRI system is the hanging apparatus around it. Scrims are DIRECTIONAL —
+   they pad the type only, and leave the rest of the screenshot clean.
+   ========================================================================== */
+.exh{border-top:1px solid var(--line)}
+.exh-head{padding:clamp(84px,11vw,168px) 0 clamp(44px,6vw,80px)}
+.wall{position:relative;width:100vw;margin-left:calc(50% - 50vw);border-top:1px solid var(--line);overflow:hidden}
+.wall-in{position:relative;display:grid;align-items:stretch;min-height:var(--wall-h,72vh)}
+.wall-art{position:relative;overflow:hidden;background:var(--paper-2)}
+.wall-art img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:var(--op,50% 45%);
+  transform:scale(var(--z,1.16)) translateY(calc(var(--wp,.5) * -22px));
+  will-change:transform;transition:transform .9s var(--ease-slow);
+}
+@media(hover:hover) and (pointer:fine){.wall:hover .wall-art img{transform:scale(calc(var(--z,1.16) + .03)) translateY(calc(var(--wp,.5) * -22px))}}
+.wall-copy{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;gap:0;padding:clamp(38px,5vw,84px) var(--gutter)}
+.wall-idx{font-family:var(--mono);font-size:11px;letter-spacing:0.24em;text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.wall-idx::before{content:"";width:9px;height:9px;background:var(--accent);flex:none;transition:transform .35s var(--ease)}
+.wall:hover .wall-idx::before{transform:rotate(45deg)}
+.wall-no{
+  font-family:var(--arch);font-weight:500;font-size:clamp(52px,7vw,112px);line-height:.8;
+  letter-spacing:-0.04em;margin:clamp(18px,2.4vw,32px) 0 clamp(14px,1.8vw,24px);opacity:.9;
+}
+.wall h3{font-size:clamp(28px,3.7vw,54px);letter-spacing:-0.022em;line-height:1.02;max-width:15ch}
+.wall-kind{margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;display:flex;flex-wrap:wrap;gap:8px 20px}
+.wall-sit{margin-top:clamp(18px,2.2vw,28px);font-size:15.5px;line-height:1.55;max-width:42ch}
+.wall-acts{margin-top:clamp(24px,3vw,38px);display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.wall-open{
+  background:none;border:1px solid currentColor;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  padding:12px 22px;display:inline-flex;align-items:center;gap:10px;color:inherit;
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.wall-live{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+  border-bottom:1px solid transparent;padding-bottom:3px;transition:border-color .25s var(--ease);
+}
+.wall-live:hover{border-bottom-color:currentColor}
+.wall-live .ext{font-size:12px;line-height:1;transition:transform .25s var(--ease)}
+.wall-live:hover .ext{transform:translate(2px,-2px)}
+.wall-note{
+  display:inline-block;margin-top:20px;font-family:var(--mono);font-size:10px;letter-spacing:0.2em;
+  text-transform:uppercase;border:1px solid currentColor;padding:6px 12px;
+}
+
+/* --- dark walls: dark in BOTH themes, ivory type, ink-side scrim --- */
+.wall--dark{background:var(--band);color:var(--band-fg)}
+.wall--dark .wall-idx{color:var(--muted-inv)}
+.wall--dark .wall-kind{color:var(--muted-inv-2)}
+.wall--dark .wall-sit{color:var(--muted-inv)}
+.wall--dark .wall-open:hover{background:var(--c-ivory);color:var(--c-ink)}
+.wall--dark .wall-note{color:var(--muted-inv-2)}
+/* --- light walls: daylight, theme-aware --- */
+.wall--light{background:var(--paper-2);color:var(--ink)}
+.wall--light .wall-idx{color:var(--muted)}
+.wall--light .wall-kind{color:var(--muted-2)}
+.wall--light .wall-sit{color:var(--muted)}
+.wall--light .wall-open:hover{background:var(--ink);color:var(--paper)}
+.wall--light .wall-note{color:var(--muted-2)}
+
+/* layout A — copy left / art right */
+.wall--split .wall-in{grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr)}
+/* layout B — art left / copy right */
+.wall--split-r .wall-in{grid-template-columns:minmax(0,1.08fr) minmax(0,0.92fr)}
+.wall--split-r .wall-art{order:1}
+.wall--split-r .wall-copy{order:2}
+/* layout C — full bleed, copy overlaid low-left. the crescendo. */
+.wall--bleed .wall-in{grid-template-columns:1fr;min-height:var(--wall-h,92vh)}
+.wall--bleed .wall-art{position:absolute;inset:0}
+.wall--bleed .wall-copy{justify-content:flex-end;align-items:flex-end;text-align:right;padding-bottom:clamp(44px,6vw,92px);max-width:min(1520px,100%);margin:0 auto;width:100%}
+.wall--bleed .wall-idx{flex-direction:row-reverse}
+.wall--bleed .wall-kind,.wall--bleed .wall-acts{justify-content:flex-end}
+.wall--bleed .wall-sit{margin-left:auto}
+@media(max-width:900px){
+  .wall--bleed .wall-copy{align-items:flex-start;text-align:left}
+  .wall--bleed .wall-idx{flex-direction:row}
+  .wall--bleed .wall-kind,.wall--bleed .wall-acts{justify-content:flex-start}
+  .wall--bleed .wall-sit{margin-left:0}
+}
+.wall--bleed .wall-copy::before{
+  content:"";position:absolute;inset:-40% -20% 0 -20%;z-index:-1;pointer-events:none;
+  background:linear-gradient(340deg,rgba(9,9,11,.95) 0%,rgba(9,9,11,.80) 30%,rgba(9,9,11,.40) 58%,rgba(9,9,11,0) 86%);
+}
+.wall--bleed h3{max-width:20ch}
+/* directional scrim on split walls — only under the type, never over the work */
+.wall--split .wall-art::before,.wall--split-r .wall-art::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+}
+.wall--split.wall--dark .wall-art::before{background:linear-gradient(90deg,rgba(19,19,22,.92) 0%,rgba(19,19,22,.42) 26%,rgba(19,19,22,0) 58%)}
+.wall--split-r.wall--dark .wall-art::before{background:linear-gradient(270deg,rgba(19,19,22,.92) 0%,rgba(19,19,22,.42) 26%,rgba(19,19,22,0) 58%)}
+.wall--split.wall--light .wall-art::before{background:linear-gradient(90deg,rgba(var(--scrim),.96) 0%,rgba(var(--scrim),.46) 24%,rgba(var(--scrim),0) 54%)}
+.wall--split-r.wall--light .wall-art::before{background:linear-gradient(270deg,rgba(var(--scrim),.96) 0%,rgba(var(--scrim),.46) 24%,rgba(var(--scrim),0) 54%)}
+
+@media(max-width:900px){
+  .wall--split .wall-in,.wall--split-r .wall-in{grid-template-columns:1fr;min-height:0}
+  .wall--split .wall-art,.wall--split-r .wall-art{order:1;position:relative;height:clamp(230px,44vw,340px)}
+  .wall--split .wall-copy,.wall--split-r .wall-copy{order:2;padding-top:clamp(30px,6vw,44px);padding-bottom:clamp(36px,7vw,52px)}
+  .wall--split .wall-art::before,.wall--split-r .wall-art::before{display:none}
+  .wall-art img{object-position:var(--opm,var(--op,50% 45%));
+    transform-origin:var(--tom,100% 50%);
+    transform:scale(var(--zm,1.8)) translateY(calc(var(--wp,.5) * -14px))}
+  .wall--bleed .wall-in{min-height:clamp(430px,86vh,620px)}
+  .wall-no{font-size:clamp(46px,13vw,72px)}
+}
+.exh-foot{padding:clamp(30px,4vw,52px) 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:0.17em;text-transform:uppercase;color:var(--muted-2);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* ---------- case-study overlays — production structure, restyled ---------- */
+dialog.cs{
+  width:min(960px,calc(100vw - 2*var(--gutter)));max-width:none;max-height:calc(100dvh - 48px);
+  border:1px solid var(--line-2);background:var(--paper);color:var(--ink);padding:0;margin:auto;
+}
+dialog.cs::backdrop{background:rgba(9,9,11,.72);backdrop-filter:blur(4px)}
+dialog.cs[open]{animation:cs-in .45s var(--ease-slow)}
+@keyframes cs-in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.cs-in{padding:clamp(26px,4vw,56px);overflow-y:auto;max-height:calc(100dvh - 50px)}
+.cs-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.cs-top .eyebrow{color:var(--accent)}
+.cs-close{background:none;border:1px solid var(--line-2);color:var(--ink);cursor:pointer;font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;padding:9px 16px;transition:border-color .25s var(--ease)}
+.cs-close:hover{border-color:var(--ink)}
+dialog.cs h3{font-size:clamp(30px,4.6vw,54px);letter-spacing:-0.024em;max-width:16ch}
+.cs-meta{display:flex;gap:10px 22px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-2)}
+.cs-meta .flagged{color:var(--accent);border:1px solid var(--accent);padding:3px 9px}
+.cs-quick{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:3px;transition:border-color .25s var(--ease)}
+.cs-quick:hover{border-bottom-color:var(--accent)}
+.cs-quick .ext{font-size:12px;line-height:1;transition:transform .25s var(--ease)}
+.cs-quick:hover .ext{transform:translate(2px,-2px)}
+.cs-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,3.5vw,44px);margin-top:clamp(26px,4vw,40px)}
+@media(max-width:680px){.cs-cols{grid-template-columns:1fr}}
+.cs-cols .eyebrow{display:block;margin-bottom:12px}
+.cs-cols p{font-size:15.5px;line-height:1.55;color:var(--muted)}
+.cs-cols p b{color:var(--ink);font-weight:600}
+.cs-gallery{display:grid;grid-template-columns:1.45fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:clamp(28px,4vw,44px)}
+@media(max-width:680px){.cs-gallery{grid-template-columns:1fr}}
+.cs-media{position:relative;background:var(--paper-2);overflow:hidden;min-height:250px}
+.cs-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .9s var(--ease-slow)}
+@media(hover:hover) and (pointer:fine){.cs-media:hover img{transform:scale(1.025)}}
+@media(max-width:680px){.cs-media{min-height:0;aspect-ratio:16/10}.cs-media.tall{aspect-ratio:4/3}}
+.cs-media .cs-tag{position:absolute;left:12px;bottom:12px;z-index:1;font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);background:rgba(var(--scrim),.9);padding:5px 9px;border:1px solid var(--line)}
+.cs-live{display:inline-flex;align-items:center;gap:12px;background:var(--red);color:#F5F0E6;border:1px solid var(--red);font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;padding:13px 24px;text-decoration:none;transition:background .25s var(--ease)}
+.cs-live:hover{background:var(--red-deep);border-color:var(--red-deep)}
+.cs-live .ext{font-size:13px;line-height:1;transition:transform .25s var(--ease)}
+.cs-live:hover .ext{transform:translate(2px,-2px)}
+.cs-dl{margin-top:clamp(28px,4vw,44px)}
+.cs-dl .eyebrow{display:block;margin-bottom:6px}
+.cs-dl ul{list-style:none;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
+@media(max-width:560px){.cs-dl ul{grid-template-columns:1fr}}
+.cs-dl li{font-size:14.5px;color:var(--muted);padding:11px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+.cs-dl li::after{content:"";width:4px;height:4px;background:var(--accent);align-self:center;flex:none}
+.cs-foot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:clamp(30px,4vw,46px);padding-top:22px;border-top:1px solid var(--line)}
+.cs-back{background:none;border:0;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink);display:inline-flex;align-items:center;gap:10px;padding:6px 0}
+.cs-back:hover{color:var(--accent)}
+
+/* ==========================================================================
+   05 · CAPABILITIES — 2x2 at scale rather than four thin columns
+   ========================================================================== */
+.caps{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-inv);border:1px solid var(--line-inv)}
+@media(max-width:720px){.caps{grid-template-columns:1fr}}
+.cap{background:var(--band);padding:clamp(30px,4vw,60px);position:relative;transition:background .4s var(--ease)}
+.cap::before{content:"";position:absolute;top:0;left:0;right:100%;height:1px;background:var(--red-soft);transition:right .55s var(--ease)}
+@media(hover:hover) and (pointer:fine){.cap:hover{background:var(--band-2)}.cap:hover::before{right:0}}
+.cap-idx{font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted-inv-2);display:flex;align-items:center;gap:12px}
+.cap-idx::before{content:"";width:8px;height:8px;background:var(--red-soft);flex:none;transition:transform .3s var(--ease)}
+.cap:hover .cap-idx::before{transform:rotate(45deg)}
+.cap h3{font-size:clamp(30px,4vw,54px);letter-spacing:-0.02em;margin:clamp(18px,2.2vw,28px) 0 clamp(20px,2.4vw,30px)}
+.cap ul{list-style:none;border-top:1px solid var(--line-inv)}
+.cap li{font-size:15px;line-height:1.45;color:var(--muted-inv);padding:11px 0;border-bottom:1px solid var(--line-inv);transition:color .3s var(--ease)}
+.cap li:last-child{border-bottom:0}
+.cap:hover li{color:var(--band-fg)}
+.caps-note{margin-top:30px;font-size:15px;color:var(--muted-inv);max-width:66ch}
+
+/* ==========================================================================
+   06 · METHOD — production mechanic, larger register
+   ========================================================================== */
+.method-track{height:1px;background:var(--line);position:relative;margin-bottom:clamp(30px,4vw,48px)}
+.method-track .mt-fill{position:absolute;left:0;top:0;height:1px;background:var(--accent);width:calc(var(--gp,0) * 100%)}
+.method{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(16px,2vw,30px)}
+@media(max-width:1000px){.method{grid-template-columns:repeat(3,1fr);row-gap:38px}}
+@media(max-width:620px){.method{grid-template-columns:repeat(2,1fr);row-gap:34px}}
+.step .num{display:block;font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--muted-2);transition:color .4s var(--ease)}
+.step h3{font-size:clamp(19px,1.9vw,25px);margin:14px 0 12px;letter-spacing:-0.01em;color:var(--muted-2);transition:color .5s var(--ease)}
+.step p{font-size:14.5px;line-height:1.5;color:var(--muted);opacity:.42;transition:opacity .5s var(--ease)}
+.step.on .num{color:var(--accent)}
+.step.on h3{color:var(--ink)}
+.step.on p{opacity:1}
+.method-note{margin-top:clamp(34px,4.5vw,58px);font-size:15px;color:var(--muted);max-width:72ch}
+
+/* ==========================================================================
+   07 · THE SYSTEM — protected. scatter -> organization -> resolution.
+   ========================================================================== */
+.sys-sec{background:var(--band);color:var(--band-fg);padding:0}
+.sys-tall{position:relative;height:190vh}
+@media(max-width:900px){.sys-tall{height:142vh}}
+.sys-stage{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:64px}
+.sys-stage>.wrap{width:100%}
+.sys-head .num{display:block;margin-bottom:14px;color:var(--muted-inv-2)}
+.sys-head p{font-family:var(--mono);font-size:clamp(10.5px,1.4vw,12.5px);letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-inv)}
+.sys-field{position:relative;flex:0 0 auto;height:min(44vh,400px);margin:clamp(18px,4vh,38px) 0}
+.frag{
+  position:absolute;left:0;top:calc(var(--row) * (100% / 7));width:100%;
+  display:grid;grid-template-columns:26px 1fr auto;gap:14px;align-items:baseline;
+  padding:10px 0;border-bottom:1px solid var(--line-inv);
+  font-family:var(--mono);font-size:clamp(10.5px,1.5vw,13px);letter-spacing:0.12em;color:var(--muted-inv);
+  transform:translate(calc(var(--sx) * (1 - var(--sp,0))),calc(var(--sy) * (1 - var(--sp,0)))) rotate(calc(var(--sr) * (1 - var(--sp,0))));
+  opacity:calc(.55 + .45 * var(--sp,0));will-change:transform;
+}
+.frag .k{color:var(--muted-inv-2);font-size:10.5px}
+.frag .fv{color:var(--muted-inv-2);text-align:right;letter-spacing:0.08em}
+.frag .fk{text-transform:uppercase;letter-spacing:0.16em;color:var(--band-fg)}
+.sys-close{opacity:calc((var(--sp,0) - .78) / .22);transform:translateY(calc((1 - var(--sp,0)) * 30px));padding-bottom:20px}
+.sys-close h2{font-size:clamp(30px,5.6vw,68px);max-width:15ch;letter-spacing:-0.026em}
+.sys-close h2 em{font-style:normal;color:var(--muted-inv)}
+.sys-close p{margin-top:18px;color:var(--muted-inv);font-size:15.5px;line-height:1.6;max-width:56ch}
+.sys-close p b{color:var(--band-fg);font-weight:600}
+.sys-close .dotr{display:inline-block;width:9px;height:9px;background:var(--red-soft);margin-left:12px}
+
+/* ==========================================================================
+   08 · OWNERSHIP — THE OXBLOOD FIELD
+   ALT-A spends its one saturated moment here: on the sentence that is the
+   hardest for a competitor to copy. Everything before and after stays
+   ivory/ink, so this reads as a decision, not a palette.
+   ========================================================================== */
+.own{
+  position:relative;overflow:clip;background:var(--field);color:var(--field-fg);
+  padding:clamp(110px,16vw,220px) 0;
+}
+.own::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 76% 120% at 78% 0%,rgba(255,246,232,.10),transparent 62%);
+}
+.own-ghost{
+  position:absolute;right:calc(-1 * var(--gutter));bottom:-.16em;z-index:0;
+  font-family:var(--arch);font-weight:500;letter-spacing:0.06em;line-height:.8;
+  font-size:clamp(160px,30vw,470px);color:var(--field-fg);opacity:.07;
+  pointer-events:none;user-select:none;white-space:nowrap;
+}
+.own .wrap{position:relative;z-index:1}
+.own-mark{font-family:var(--mono);font-size:10.5px;letter-spacing:0.24em;text-transform:uppercase;color:var(--field-muted);display:flex;align-items:center;gap:14px;padding-bottom:22px;border-bottom:1px solid var(--field-line);margin-bottom:clamp(40px,6vw,72px)}
+.own-mark .sq{width:8px;height:8px;background:var(--field-fg);flex:none}
+.own h2{font-size:clamp(38px,8.4vw,124px);line-height:0.88;letter-spacing:-0.036em;max-width:11ch}
+.own-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.78fr);gap:clamp(30px,5vw,80px);align-items:end;margin-top:clamp(34px,5vw,64px)}
+@media(max-width:880px){.own-grid{grid-template-columns:1fr;gap:28px}}
+.own-grid p{color:var(--field-muted);font-size:16.5px;line-height:1.62;max-width:46ch}
+.own-grid p b{color:var(--field-fg);font-weight:600}
+/* the field entrance — one wipe, once */
+.own-wipe{position:absolute;inset:0;background:var(--paper);transform-origin:bottom;z-index:2;pointer-events:none;transform:scaleY(1)}
+.own.in .own-wipe{transform:scaleY(0);transition:transform 1.05s var(--ease-slow)}
+.no-io .own-wipe{display:none}
+
+/* ==========================================================================
+   09 · ABOUT
+   ========================================================================== */
+.about-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:clamp(32px,6vw,90px)}
+@media(max-width:880px){.about-grid{grid-template-columns:1fr;gap:34px}}
+.about-grid .pull{max-width:22ch;font-family:var(--arch);font-weight:500;font-size:clamp(24px,3.4vw,42px);line-height:1.16;letter-spacing:-0.022em}
+.about-copy p{color:var(--muted);font-size:16px;line-height:1.62}
+.about-copy p+p{margin-top:17px}
+.about-copy p b{color:var(--ink);font-weight:600}
+.about-band{margin-top:clamp(44px,6vw,76px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap}
+.about-band span{font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-2);padding:17px 22px 17px 0;margin-right:22px;display:inline-flex;align-items:center;gap:12px}
+.about-band span::after{content:"";width:4px;height:4px;background:var(--line-2)}
+.about-band span:last-child::after{display:none}
+.about-band b{color:var(--ink);font-weight:500}
+
+/* ---------- local transition band ---------- */
+.local{position:relative;border-top:1px solid var(--line);padding:clamp(30px,4vw,48px) 0;overflow:hidden}
+.local::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 180% at 88% 50%,var(--atmo-light),transparent 66%),radial-gradient(ellipse 50% 150% at 4% 50%,var(--atmo-warm),transparent 70%)}
+.local .wrap{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.local .loc-a{font-family:var(--mono);font-size:11px;letter-spacing:0.26em;text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.local .loc-a .sq{width:7px;height:7px;background:var(--accent);flex:none}
+.local .loc-b{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-2)}
+
+/* ==========================================================================
+   10 · START — the closing poster
+   ========================================================================== */
+.close-sec{background:var(--band);color:var(--band-fg);padding:clamp(84px,11vw,150px) 0 clamp(64px,8vw,110px)}
+.close-head{border-bottom:1px solid var(--line-inv);padding-bottom:clamp(40px,5vw,66px);margin-bottom:clamp(44px,6vw,76px)}
+.close-head .num{display:block;color:var(--muted-inv-2);margin-bottom:clamp(22px,3vw,36px)}
+.close-head h2{font-size:clamp(36px,7.6vw,110px);line-height:0.9;letter-spacing:-0.034em;max-width:13ch}
+.contact-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(36px,6vw,100px);align-items:start}
+@media(max-width:960px){.contact-grid{grid-template-columns:1fr;gap:48px}}
+.contact-lede .sub{color:var(--muted-inv);font-size:17px;line-height:1.6;max-width:38ch}
+.next{margin-top:clamp(34px,4.5vw,54px);border-top:1px solid var(--line-inv)}
+.next h4{font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted-inv-2);font-weight:500;padding:18px 0 4px}
+.next ol{list-style:none;counter-reset:n}
+.next li{counter-increment:n;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-inv);font-size:14.5px;line-height:1.5;color:var(--muted-inv)}
+.next li::before{content:"0" counter(n);font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;color:var(--muted-inv-2);padding-top:3px}
+.direct{margin-top:clamp(30px,4vw,46px)}
+.direct .eyebrow{display:block;color:var(--muted-inv-2);margin-bottom:14px}
+.direct a{font-family:var(--arch);font-weight:500;font-size:clamp(19px,2.2vw,27px);letter-spacing:-0.015em;text-decoration:none;border-bottom:1px solid var(--line-inv-2);padding-bottom:4px;transition:border-color .25s var(--ease),color .25s var(--ease)}
+.direct a:hover{color:var(--red-soft);border-bottom-color:var(--red-soft)}
+.direct .micro{margin-top:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-inv-2);line-height:2}
+
+form.consult{display:flex;flex-direction:column;gap:26px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:620px){.f-row{grid-template-columns:1fr}}
+.f-block{display:flex;flex-direction:column;gap:8px;position:relative}
+.f-block label{font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-inv)}
+.f-block label .req{color:var(--red-soft);margin-left:4px}
+.f-block input,.f-block textarea{
+  background:transparent;border:0;border-bottom:1px solid var(--line-inv-2);color:var(--band-fg);
+  font-family:var(--sans);font-size:16px;padding:11px 2px;border-radius:0;transition:border-color .25s var(--ease);
+}
+.f-block input:focus,.f-block textarea:focus{outline:none;border-bottom-color:var(--band-fg)}
+.f-block input::placeholder{color:var(--muted-inv-2)}
+.f-block.invalid input,.f-block.invalid textarea{border-bottom-color:var(--red-soft)}
+.f-block .err{display:none;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--red-soft)}
+.f-block.invalid .err{display:block}
+fieldset{border:0}
+legend{font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-inv);margin-bottom:16px}
+.opt{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;font-size:15px;color:var(--muted-inv);transition:color .25s var(--ease)}
+.opt:hover{color:var(--band-fg)}
+.opt input{accent-color:var(--red-soft);width:15px;height:15px;flex:none}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+@media(max-width:520px){.opt-grid{grid-template-columns:1fr}}
+.submit-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:6px}
+.form-note{font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted-inv-2)}
+.form-status{display:none;border:1px solid var(--line-inv);border-left:2px solid var(--red-soft);padding:18px 20px;font-size:14.5px;color:var(--band-fg);line-height:1.5}
+.form-status.show{display:block}
+
+/* ---------- footer ---------- */
+footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--line-inv);padding:clamp(56px,8vw,96px) 0 36px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr));gap:clamp(28px,4vw,64px);padding-bottom:clamp(40px,6vw,64px);border-bottom:1px solid var(--line-inv)}
+@media(max-width:820px){.foot-grid{grid-template-columns:1fr 1fr;gap:34px}.foot-brand{grid-column:1 / -1}}
+@media(max-width:520px){.foot-grid{grid-template-columns:1fr}}
+.foot-brand .wordmark .wm-a{font-size:clamp(40px,5.4vw,66px);color:var(--band-fg)}
+.foot-brand .wordmark .wm-g{font-size:clamp(11px,1.2vw,13px);color:var(--muted-inv-2)}
+.foot-brand .ft{margin-top:22px;font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-inv-2);line-height:2}
+.foot-col h4{font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted-inv-2);font-weight:500;margin-bottom:18px}
+.foot-col ul{list-style:none}
+.foot-col li{padding:6px 0}
+.foot-col a{color:var(--muted-inv);text-decoration:none;font-size:14.5px;transition:color .25s var(--ease)}
+.foot-col a:hover{color:var(--band-fg)}
+.foot-base{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-top:28px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-inv-2)}
+footer .theme-btn,footer .sys-link{color:var(--muted-inv-2)}
+footer .theme-btn:hover,footer .sys-link:hover{color:var(--band-fg)}
+.foot-appearance{display:flex;align-items:center;gap:12px}
+
+/* ==========================================================================
+   REDUCED MOTION — every sequence has a complete static end state
+   ========================================================================== */
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none}
+  .hero-fade{opacity:1;transform:none}
+  .awi{transform:none!important}
+  .aperture,.hero.go .aperture{clip-path:none!important}
+  .ap-cell img{transform:scale(1.14)!important}
+  .wall-art img{transform:scale(var(--z,1.16))!important}
+  .ledger .ledger-row{opacity:1!important;transform:none!important}
+  .frag{transform:none!important;opacity:1!important}
+  .sys-close{opacity:1!important;transform:none!important}
+  .sys-tall{height:auto!important}
+  .sys-stage{position:static;height:auto;padding:clamp(80px,10vw,130px) 0}
+  .own-wipe{display:none}
+  .step h3{color:var(--ink)}.step p{opacity:1}.step .num{color:var(--muted-2)}
+  .method-track .mt-fill{width:100%}
+  .path .p-idx::after{transform:scaleX(1)!important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media print{
+  .reveal,.hero-fade{opacity:1!important;transform:none!important}
+  .aperture{clip-path:none!important}
+  .ledger .ledger-row{opacity:1!important;transform:none!important}
+  .frag,.sys-close{opacity:1!important;transform:none!important}
+  .own-wipe,.exp-flag{display:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<span class="exp-flag">ALT-A · Art-direction study · Not production</span>
+
+<!-- ================= HEADER ================= -->
+<header class="masthead">
+  <div class="wrap-wide">
+    <a class="brand" href="#top" aria-label="AMRI Group — home">AMRI&nbsp;GROUP</a>
+    <nav class="primary" aria-label="Primary">
+      <a class="nl" href="#work">Work</a>
+      <a class="nl" href="#capabilities">What We Do</a>
+      <a class="nl" href="#how-we-work">How We Work</a>
+      <a class="nl" href="#about">About</a>
+      <a class="nl" href="#contact">Contact</a>
+      <button class="theme-btn" type="button" data-theme-toggle>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <g class="ti-sun"><circle cx="12" cy="12" r="4"/><g class="ti-rays">
+            <line x1="12" y1="2.4" x2="12" y2="4.6"/><line x1="12" y1="19.4" x2="12" y2="21.6"/>
+            <line x1="2.4" y1="12" x2="4.6" y2="12"/><line x1="19.4" y1="12" x2="21.6" y2="12"/>
+            <line x1="5.4" y1="5.4" x2="7" y2="7"/><line x1="17" y1="17" x2="18.6" y2="18.6"/>
+            <line x1="5.4" y1="18.6" x2="7" y2="17"/><line x1="17" y1="7" x2="18.6" y2="5.4"/>
+          </g></g>
+          <g class="ti-moon"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6 7.8 7.8 0 1 0 20.4 14.6Z"/></g>
+        </svg>
+      </button>
+      <a class="cta-btn" href="#contact">Start a project</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mnav">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </div>
+</header>
+
+<div class="mnav" id="mnav" aria-hidden="true">
+  <div class="mnav-top">
+    <span class="bw">AMRI&nbsp;GROUP</span>
+    <button class="mnav-close" aria-label="Close menu">CLOSE</button>
+  </div>
+  <ul>
+    <li><a href="#work"><span class="k">01</span>Work</a></li>
+    <li><a href="#capabilities"><span class="k">02</span>What We Do</a></li>
+    <li><a href="#how-we-work"><span class="k">03</span>How We Work</a></li>
+    <li><a href="#about"><span class="k">04</span>About</a></li>
+    <li><a href="#contact"><span class="k">05</span>Start a project</a></li>
+  </ul>
+  <div class="appearance">
+    <span class="ap-l">Appearance</span>
+    <button class="theme-btn" type="button" data-theme-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <g class="ti-sun"><circle cx="12" cy="12" r="4"/><g class="ti-rays">
+          <line x1="12" y1="2.4" x2="12" y2="4.6"/><line x1="12" y1="19.4" x2="12" y2="21.6"/>
+          <line x1="2.4" y1="12" x2="4.6" y2="12"/><line x1="19.4" y1="12" x2="21.6" y2="12"/>
+          <line x1="5.4" y1="5.4" x2="7" y2="7"/><line x1="17" y1="17" x2="18.6" y2="18.6"/>
+          <line x1="5.4" y1="18.6" x2="7" y2="17"/><line x1="17" y1="7" x2="18.6" y2="5.4"/>
+        </g></g>
+        <g class="ti-moon"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6 7.8 7.8 0 1 0 20.4 14.6Z"/></g>
+      </svg>
+    </button>
+    <button class="sys-link" type="button" data-theme-system aria-pressed="false">Use system</button>
+  </div>
+  <div class="mfoot">Atlanta, Georgia · Brand · Web · Digital Presence</div>
+</div>
+
+<main id="main">
+
+<!-- ================= HERO — THE APERTURE ================= -->
+<div class="hero" id="top">
+  <div class="wrap-wide">
+    <div class="hero-meta hero-fade">
+      <span>Atlanta, Georgia</span>
+      <span>Brand · Web · Digital Presence</span>
+    </div>
+    <h1>
+      <span class="hl1">
+        <span class="aw"><span class="awi" data-d="1" style="--ay:105%">Your</span></span>
+        <span class="aw"><span class="awi" data-d="1" style="--ay:105%">business</span></span>
+        <span class="aw"><span class="awi" data-d="2" style="--ay:105%">grew.</span></span>
+      </span>
+    </h1>
+  </div>
+
+  <!-- the aperture: a slot cut through the page, showing the actual work.
+       it physically separates the two halves of the sentence. -->
+  <div class="aperture">
+    <div class="ap-strip" role="img" aria-label="Four live AMRI projects: Trademark Design Painting &amp; Decorating, Visionary Construction, Linework Studio and Helio.">
+      <div class="ap-cell"><img src="assets/images/trademark-home.webp" alt="" width="960" height="549" style="object-position:58% 42%"></div>
+      <div class="ap-cell"><img src="assets/images/visionary-home.webp" alt="" width="960" height="549" style="object-position:52% 46%"></div>
+      <div class="ap-cell on-light"><img src="assets/images/linework-home.webp" alt="" width="960" height="549" style="object-position:88% 56%"></div>
+      <div class="ap-cell on-light"><img src="assets/images/helio-home.webp" alt="" width="960" height="549" style="object-position:74% 46%"></div>
+    </div>
+  </div>
+
+  <div class="wrap-wide">
+    <div class="ap-ledger">
+      <span class="n">W—01 &nbsp;Trademark Design</span>
+      <span class="n">W—02 &nbsp;Visionary Construction</span>
+      <span class="n">W—03 &nbsp;Linework Studio</span>
+      <span class="n">W—04 &nbsp;Helio</span>
+      <span>Four projects · All live</span>
+    </div>
+    <h1>
+      <span class="hl2" aria-label="Your presence should too.">
+        <span class="aw" aria-hidden="true"><span class="awi" data-d="3" style="--ax:.5em;--ay:100%;--ar:.6deg">Your</span></span>
+        <span class="aw" aria-hidden="true"><span class="awi" data-d="4" style="--ax:-.4em;--ay:100%;--ar:-.5deg">presence</span></span>
+        <span class="aw" aria-hidden="true"><span class="awi" data-d="5" style="--ax:.6em;--ay:100%;--ar:.4deg">should</span></span>
+        <span class="aw" aria-hidden="true"><span class="awi" data-d="6" style="--ax:-.3em;--ay:100%;--ar:-.6deg">too.</span></span>
+      </span>
+    </h1>
+    <div class="hero-low">
+      <p class="lede hero-fade">AMRI Group helps local businesses launch, rebuild and grow — thoughtful branding, modern websites, and the digital systems behind them, handled by one partner.</p>
+      <div class="hero-actions hero-fade f2">
+        <a class="cta-btn" href="#contact">Start a project</a>
+        <a class="ghost-btn" href="#work">View our work</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 01 · THE GAP ================= -->
+<section class="sec" id="problem" aria-labelledby="problem-h">
+  <div class="wrap">
+    <div class="chapter reveal">
+      <div class="ch-mark">
+        <span class="ch-no">01</span>
+        <span class="ch-label">The Gap</span>
+      </div>
+      <div>
+        <h2 id="problem-h">Your business changed. Your digital presence didn't.</h2>
+      </div>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-copy reveal">
+        <p>It happens quietly. The company grows on referrals and reputation, year after year — and the website, the Google profile, the logo, the email address all stay where they were when things started.</p>
+        <p>Then one day a serious customer searches your name, finds a site from another era, hours that are wrong, a Facebook page nobody can log into — and calls a competitor who simply <strong>looks</strong> more established. Not better. Just more visible.</p>
+        <p class="big-claim">The work is excellent. The presence doesn't say so. That gap costs real opportunities<span class="tick">.</span></p>
+      </div>
+      <div class="reveal d1">
+        <div class="ledger" role="img" aria-label="A familiar picture: website last updated years ago, Google profile showing wrong hours, email still on a personal Gmail address, Facebook owner unknown, logo saved as a low-resolution JPEG, business cards with an old phone number, Instagram missing, and nobody sure who holds the passwords.">
+          <div class="ledger-head"><span>A familiar picture</span><span>Sound like yours?</span></div>
+          <div class="ledger-row"><span class="lk">Website</span><span class="lv flag">Last updated years ago</span></div>
+          <div class="ledger-row"><span class="lk">Google profile</span><span class="lv">Wrong hours, old photos</span></div>
+          <div class="ledger-row"><span class="lk">Business email</span><span class="lv flag">Still @gmail.com</span></div>
+          <div class="ledger-row"><span class="lk">Facebook</span><span class="lv">Owner unknown</span></div>
+          <div class="ledger-row"><span class="lk">Logo file</span><span class="lv">A low-res JPEG</span></div>
+          <div class="ledger-row"><span class="lk">Business cards</span><span class="lv">Old phone number</span></div>
+          <div class="ledger-row"><span class="lk">Instagram</span><span class="lv flag">Doesn't exist</span></div>
+          <div class="ledger-row"><span class="lk">Passwords</span><span class="lv">Nobody is sure</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 · THREE SITUATIONS ================= -->
+<section class="sec" id="situations" aria-labelledby="paths-h">
+  <div class="wrap">
+    <div class="chapter reveal">
+      <div class="ch-mark">
+        <span class="ch-no">02</span>
+        <span class="ch-label">Three Situations</span>
+      </div>
+      <div>
+        <h2 id="paths-h">Wherever the business is, there's a way forward.</h2>
+        <p class="lede">These aren't packages. They're the three situations we meet most — and how an engagement usually takes shape from each.</p>
+      </div>
+    </div>
+    <div class="paths">
+      <article class="path reveal">
+        <span class="p-idx">01</span>
+        <h3>Launch</h3>
+        <p class="p-sit">Starting something worth building properly — a professional foundation from day one.</p>
+        <ul>
+          <li>Identity &amp; logo</li><li>Website</li><li>Domain &amp; business email</li>
+          <li>Google &amp; social profiles</li><li>Business cards &amp; collateral</li><li>Launch support</li>
+        </ul>
+        <a class="p-link" href="#contact">Talk to us <span class="arr">&rarr;</span></a>
+      </article>
+      <article class="path reveal d1">
+        <span class="p-idx">02</span>
+        <h3>Rebuild</h3>
+        <p class="p-sit">Your company evolved. We bring the rest with it — around the business you've become.</p>
+        <ul>
+          <li>Website redesign</li><li>Brand refinement</li><li>Google presence</li>
+          <li>Social cleanup</li><li>Hosting, domain &amp; email</li><li>Digital consolidation</li>
+        </ul>
+        <a class="p-link" href="#contact">Talk to us <span class="arr">&rarr;</span></a>
+      </article>
+      <article class="path reveal d2">
+        <span class="p-idx">03</span>
+        <h3>Grow</h3>
+        <p class="p-sit">A strong foundation deserves momentum — visibility, leads and steady improvement.</p>
+        <ul>
+          <li>SEO foundations</li><li>Campaign landing pages</li><li>Content structure</li>
+          <li>Lead systems</li><li>Analytics &amp; optimization</li><li>Ongoing consulting</li>
+        </ul>
+        <a class="p-link" href="#contact">Talk to us <span class="arr">&rarr;</span></a>
+      </article>
+    </div>
+    <p class="paths-note reveal">Not sure which one you are? That's normal — most businesses are a mix. Every engagement starts with a conversation and an honest look at what exists, before anything is scoped.</p>
+  </div>
+</section>
+
+<!-- ================= 03 · SELECTED WORK — THE EXHIBITION =================
+     Four walls. Each project keeps the tonal world of its own live site;
+     the AMRI system is the hanging apparatus around it. Scrims are
+     directional — they pad the type, they do not cover the work.
+     Imagery: real screenshots of four live production sites, Aug 2026.
+     No metrics anywhere. None are verified.
+================================================================== -->
+<div class="exh" id="work">
+  <div class="exh-head">
+    <div class="wrap">
+      <div class="chapter reveal">
+        <div class="ch-mark">
+          <span class="ch-no">03</span>
+          <span class="ch-label">Selected Work</span>
+        </div>
+        <div>
+          <h2 id="work-h">Four kinds of business. One standard.</h2>
+          <p class="lede">Different businesses, different problems, the same standard of care. Every project here is live on the web.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W—01 · Trademark — dark wall, copy left -->
+  <article class="wall wall--dark wall--split" data-wall data-cs="cs-1" style="--wall-h:74vh">
+    <div class="wall-in">
+      <div class="wall-copy">
+        <span class="wall-idx">W—01 · Painting · Georgia</span>
+        <span class="wall-no">01</span>
+        <h3>Established local business</h3>
+        <div class="wall-kind"><span>Trademark Design Painting &amp; Decorating</span><span>Brand / Web / Presence</span></div>
+        <p class="wall-sit">Twenty-four years of craft was proven. The presence said otherwise.</p>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open>Open case study <span class="arr">&rarr;</span></button>
+          <a class="wall-live" href="https://www.trademarkdp.com/" target="_blank" rel="noopener noreferrer">trademarkdp.com <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+      <div class="wall-art">
+        <img src="assets/images/trademark-home.webp" alt="The Trademark Design homepage on the live site — a painted Georgia home behind the headline “The prep work is the paint job.”" loading="lazy" decoding="async" width="960" height="549" style="--op:100% 62%;--z:1.3;--opm:100% 50%;--zm:2.2;--tom:100% 62%">
+      </div>
+    </div>
+  </article>
+
+  <!-- W—02 · Visionary — the crescendo. full bleed. -->
+  <article class="wall wall--dark wall--bleed" data-wall data-cs="cs-2" style="--wall-h:94vh">
+    <div class="wall-in">
+      <div class="wall-art">
+        <img src="assets/images/visionary-home.webp" alt="The Visionary Construction homepage on the live site — a remodeled Atlanta home at dusk behind the headline “See Your Home Differently.”" loading="lazy" decoding="async" width="960" height="549" style="--op:60% 42%;--z:1.12;--opm:100% 50%;--zm:1.95;--tom:100% 46%">
+      </div>
+      <div class="wall-copy">
+        <span class="wall-idx">W—02 · Remodeling · Atlanta</span>
+        <span class="wall-no">02</span>
+        <h3>Residential construction</h3>
+        <div class="wall-kind"><span>Visionary Construction</span><span>Web / Portfolio</span></div>
+        <p class="wall-sit">Finished homes are the strongest sales asset a remodeler has. They needed to be seen the way homeowners actually experience them.</p>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open>Open case study <span class="arr">&rarr;</span></button>
+          <a class="wall-live" href="https://visionary-pro.com/" target="_blank" rel="noopener noreferrer">visionary-pro.com <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- W—03 · Linework — daylight. the exhibition opens up. copy right. -->
+  <article class="wall wall--light wall--split-r" data-wall data-cs="cs-3" style="--wall-h:74vh">
+    <div class="wall-in">
+      <div class="wall-art">
+        <img src="assets/images/linework-home.webp" alt="The Linework Studio homepage on the live site — editorial typography beside a greyscale kitchen elevation render." loading="lazy" decoding="async" width="960" height="549" style="--op:100% 40%;--z:1.2;--opm:100% 50%;--zm:1.9;--tom:100% 42%">
+      </div>
+      <div class="wall-copy">
+        <span class="wall-idx">W—03 · Design studio</span>
+        <span class="wall-no">03</span>
+        <h3>Design studio</h3>
+        <div class="wall-kind"><span>Linework Studio</span><span>Web / Editorial</span></div>
+        <p class="wall-sit">Drawings made with unusual precision. The shop window had to match them.</p>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open>Open case study <span class="arr">&rarr;</span></button>
+          <a class="wall-live" href="https://linework.studio/" target="_blank" rel="noopener noreferrer">linework.studio <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- W—04 · Helio — in-house product. labelled, unmissably. -->
+  <article class="wall wall--light wall--split" data-wall data-cs="cs-4" style="--wall-h:64vh">
+    <div class="wall-in">
+      <div class="wall-copy">
+        <span class="wall-idx">W—04 · Digital product</span>
+        <span class="wall-no">04</span>
+        <h3>Digital product</h3>
+        <div class="wall-kind"><span>Helio</span><span>UX / UI / Product</span></div>
+        <p class="wall-sit">Product thinking end to end — proof that the same discipline applied to a contractor's website holds up inside software.</p>
+        <span class="wall-note">In-house product · not client work</span>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open>Open case study <span class="arr">&rarr;</span></button>
+          <a class="wall-live" href="https://www.gethelioapp.com/" target="_blank" rel="noopener noreferrer">gethelioapp.com <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+      <div class="wall-art">
+        <img src="assets/images/helio-home.webp" alt="The Helio homepage on the live site — a calm GLP-1 journal interface beside its headline." loading="lazy" decoding="async" width="960" height="549" style="--op:100% 46%;--z:1.5;--opm:100% 50%;--zm:1.85;--tom:100% 48%">
+      </div>
+    </div>
+  </article>
+
+  <div class="wrap">
+    <div class="exh-foot">
+      <span>Four projects · All live · Full detail inside each case study</span>
+      <span>Screenshots captured Aug 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- case-study overlays — production structure and copy ---------- -->
+<dialog class="cs" id="cs-1" aria-labelledby="cs-1-h">
+  <div class="cs-in">
+    <div class="cs-top"><span class="eyebrow">Established local business</span><button class="cs-close" data-close>Close</button></div>
+    <h3 id="cs-1-h">Trademark Design Painting &amp; Decorating</h3>
+    <div class="cs-meta"><span>Residential &amp; commercial painting</span><span>Georgia</span><span>Brand / Web / Digital presence</span></div>
+    <a class="cs-quick" href="https://www.trademarkdp.com/" target="_blank" rel="noopener noreferrer">View live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> — Trademark Design (opens in a new tab)</span></a>
+    <div class="cs-cols">
+      <div><span class="eyebrow">The situation</span><p>An established painting company whose real-world reputation had outgrown its web presence. Twenty-four years of craft was proven; the presence said otherwise.</p></div>
+      <div><span class="eyebrow">What AMRI provided</span><p>Strategy and discovery, a modern website built for mobile, domain and email infrastructure carried over without disruption, a clear path from visit to estimate, and collateral to match &mdash; <b>a presence that finally reflects the maturity of the actual business.</b></p></div>
+    </div>
+    <div class="cs-gallery">
+      <div class="cs-media"><img src="assets/images/trademark-detail.webp" alt="Trademark Design services page on the live website — the full range of painting services, organized and plainly explained" loading="lazy" decoding="async" width="900" height="562"><span class="cs-tag">trademarkdp.com</span></div>
+      <div class="cs-media tall"><img src="assets/images/trademark-mobile.webp" alt="Trademark Design homepage on mobile — the experience most customers see first" loading="lazy" decoding="async" width="460" height="995"></div>
+    </div>
+    <div class="cs-dl">
+      <span class="eyebrow">Selected deliverables</span>
+      <ul><li>Discovery &amp; strategy</li><li>Website design &amp; build</li><li>Domain &amp; email migration</li><li>Estimate-request flow</li><li>Print collateral</li><li>Documentation &amp; handoff</li></ul>
+    </div>
+    <div class="cs-foot">
+      <button class="cs-back" data-close><span class="arr">&larr;</span> Back to work</button>
+      <a class="cs-live" href="https://www.trademarkdp.com/" target="_blank" rel="noopener noreferrer">Visit live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="cs" id="cs-2" aria-labelledby="cs-2-h">
+  <div class="cs-in">
+    <div class="cs-top"><span class="eyebrow">Residential construction</span><button class="cs-close" data-close>Close</button></div>
+    <h3 id="cs-2-h">Visionary Construction</h3>
+    <div class="cs-meta"><span>Home remodeling &amp; improvements</span><span>Atlanta metro</span><span>Web / Portfolio</span></div>
+    <a class="cs-quick" href="https://visionary-pro.com/" target="_blank" rel="noopener noreferrer">View live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> — Visionary Construction (opens in a new tab)</span></a>
+    <div class="cs-cols">
+      <div><span class="eyebrow">The situation</span><p>A remodeler whose finished homes are its strongest sales asset &mdash; and a presence that wasn&rsquo;t letting them speak. The work needed to be seen the way homeowners actually experience it.</p></div>
+      <div><span class="eyebrow">What AMRI provided</span><p>A cinematic residential presentation built around the work itself: project storytelling, a portfolio structured for real rooms and real results, and <b>a direct path from browsing the work to requesting a quote.</b></p></div>
+    </div>
+    <div class="cs-gallery">
+      <div class="cs-media"><img src="assets/images/visionary-detail.webp" alt="Visionary Construction on the live website — project imagery and the design-build process, presented room by room" loading="lazy" decoding="async" width="900" height="562"><span class="cs-tag">visionary-pro.com</span></div>
+      <div class="cs-media tall"><img src="assets/images/visionary-mobile.webp" alt="Visionary Construction homepage on mobile — See Your Home Differently" loading="lazy" decoding="async" width="460" height="995"></div>
+    </div>
+    <div class="cs-dl">
+      <span class="eyebrow">Selected deliverables</span>
+      <ul><li>Website design &amp; build</li><li>Portfolio presentation</li><li>Project storytelling structure</li><li>Positioning &amp; copy</li><li>Quote-request path</li></ul>
+    </div>
+    <div class="cs-foot">
+      <button class="cs-back" data-close><span class="arr">&larr;</span> Back to work</button>
+      <a class="cs-live" href="https://visionary-pro.com/" target="_blank" rel="noopener noreferrer">Visit live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="cs" id="cs-3" aria-labelledby="cs-3-h">
+  <div class="cs-in">
+    <div class="cs-top"><span class="eyebrow">Design studio</span><button class="cs-close" data-close>Close</button></div>
+    <h3 id="cs-3-h">Linework Studio</h3>
+    <div class="cs-meta"><span>Cabinetry design documentation</span><span>Atlanta metro</span><span>Web / Editorial</span></div>
+    <a class="cs-quick" href="https://linework.studio/" target="_blank" rel="noopener noreferrer">View live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> — Linework Studio (opens in a new tab)</span></a>
+    <div class="cs-cols">
+      <div><span class="eyebrow">The situation</span><p>A documentation studio producing design packets for remodels and new construction &mdash; drawings, elevations and specifications made with unusual precision. The shop window had to match the drawings.</p></div>
+      <div><span class="eyebrow">What AMRI provided</span><p>An editorial web experience with the restraint the work deserves: architectural typography, a packet catalogue presented like a portfolio, and <b>premium positioning that lets the drawings lead.</b></p></div>
+    </div>
+    <div class="cs-gallery">
+      <div class="cs-media"><img src="assets/images/linework-detail.webp" alt="Linework Studio's design packets on the live website — kitchen, closet and bathroom documentation presented as a catalogue" loading="lazy" decoding="async" width="900" height="562"><span class="cs-tag">linework.studio</span></div>
+      <div class="cs-media tall"><img src="assets/images/linework-mobile.webp" alt="Linework Studio homepage on mobile — editorial typography carrying the studio's precision" loading="lazy" decoding="async" width="460" height="995"></div>
+    </div>
+    <div class="cs-dl">
+      <span class="eyebrow">Selected deliverables</span>
+      <ul><li>Editorial web experience</li><li>Typography system</li><li>Packet catalogue presentation</li><li>Service positioning</li></ul>
+    </div>
+    <div class="cs-foot">
+      <button class="cs-back" data-close><span class="arr">&larr;</span> Back to work</button>
+      <a class="cs-live" href="https://linework.studio/" target="_blank" rel="noopener noreferrer">Visit live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="cs" id="cs-4" aria-labelledby="cs-4-h">
+  <div class="cs-in">
+    <div class="cs-top"><span class="eyebrow">Digital product</span><button class="cs-close" data-close>Close</button></div>
+    <h3 id="cs-4-h">Helio</h3>
+    <div class="cs-meta"><span class="flagged">In-house product</span><span>Digital product</span><span>UX / UI / Product</span></div>
+    <a class="cs-quick" href="https://www.gethelioapp.com/" target="_blank" rel="noopener noreferrer">View live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> — Helio (opens in a new tab)</span></a>
+    <div class="cs-cols">
+      <div><span class="eyebrow">The product</span><p>A private, quiet place for people to keep a GLP-1 routine in one record &mdash; a health journal where calm interface design isn&rsquo;t a style choice, it&rsquo;s the point. <b>Built by AMRI, for AMRI — not a client engagement.</b></p></div>
+      <div><span class="eyebrow">Why it&rsquo;s here</span><p>Product thinking end to end &mdash; interface design, web application experience and product strategy. Proof that the same discipline applied to a contractor&rsquo;s website <b>holds up inside software.</b></p></div>
+    </div>
+    <div class="cs-gallery">
+      <div class="cs-media"><img src="assets/images/helio-detail.webp" alt="Helio interface on the live site — the record structure, food and body support, explained in three steps" loading="lazy" decoding="async" width="900" height="562"><span class="cs-tag">gethelioapp.com</span></div>
+      <div class="cs-media tall"><img src="assets/images/helio-mobile.webp" alt="Helio on mobile — Keep your GLP-1 routine in one quiet place" loading="lazy" decoding="async" width="460" height="995"></div>
+    </div>
+    <div class="cs-dl">
+      <span class="eyebrow">Selected deliverables</span>
+      <ul><li>Interface design</li><li>Web application UX</li><li>Product strategy</li><li>Design system</li></ul>
+    </div>
+    <div class="cs-foot">
+      <button class="cs-back" data-close><span class="arr">&larr;</span> Back to work</button>
+      <a class="cs-live" href="https://www.gethelioapp.com/" target="_blank" rel="noopener noreferrer">Visit live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+    </div>
+  </div>
+</dialog>
+
+<!-- ================= 04 · WHAT WE HANDLE ================= -->
+<section class="sec dark-sec" id="capabilities" aria-labelledby="caps-h">
+  <div class="wrap">
+    <div class="chapter reveal">
+      <div class="ch-mark">
+        <span class="ch-no">04</span>
+        <span class="ch-label">What We Handle</span>
+      </div>
+      <div>
+        <h2 id="caps-h">Four disciplines. One practice.</h2>
+        <p class="lede">Most digital problems aren't one problem. Brand, website, public presence and growth are one connected system — so we treat them that way.</p>
+      </div>
+    </div>
+    <div class="caps">
+      <div class="cap reveal">
+        <span class="cap-idx">C—01</span>
+        <h3>Brand</h3>
+        <ul><li>Brand strategy</li><li>Identity &amp; logo refinement</li><li>Business cards</li><li>Print &amp; digital collateral</li><li>Brand systems</li></ul>
+      </div>
+      <div class="cap reveal d1">
+        <span class="cap-idx">C—02</span>
+        <h3>Web</h3>
+        <ul><li>Website strategy</li><li>New websites &amp; redesigns</li><li>UX / UI &amp; development</li><li>Lead forms &amp; landing pages</li><li>Hosting &amp; domain configuration</li></ul>
+      </div>
+      <div class="cap reveal d2">
+        <span class="cap-idx">C—03</span>
+        <h3>Presence</h3>
+        <ul><li>Google Business Profile</li><li>Facebook / Instagram setup</li><li>Business email &amp; workspace</li><li>Local listings</li><li>Profile alignment</li></ul>
+      </div>
+      <div class="cap reveal d3">
+        <span class="cap-idx">C—04</span>
+        <h3>Growth</h3>
+        <ul><li>SEO foundations</li><li>Campaign landing pages</li><li>Analytics</li><li>Conversion improvements</li><li>Ongoing consulting</li></ul>
+      </div>
+    </div>
+    <p class="caps-note reveal">We deliver, configure, manage or coordinate each of these — and we'll tell you plainly which is which. What we don't do is pretend a checklist replaces judgment about what your business actually needs.</p>
+  </div>
+</section>
+
+<!-- ================= 05 · HOW WE WORK ================= -->
+<section class="sec" id="how-we-work" aria-labelledby="method-h" data-scrub="method">
+  <div class="wrap">
+    <div class="chapter reveal">
+      <div class="ch-mark">
+        <span class="ch-no">05</span>
+        <span class="ch-label">How We Work</span>
+      </div>
+      <div>
+        <h2 id="method-h">Audit first. Recommend second.</h2>
+        <p class="lede">Not every business needs a new logo, a new website or paid ads. Before anything is built, we find out what's actually there — then scope only what matters.</p>
+      </div>
+    </div>
+    <div class="method-track" aria-hidden="true"><span class="mt-fill"></span></div>
+    <div class="method reveal">
+      <div class="step"><span class="num">01</span><h3>Discover</h3><p>A conversation about the business — where it is, where it's going, what exists today.</p></div>
+      <div class="step"><span class="num">02</span><h3>Scope</h3><p>An honest audit of your presence. What works, what's broken, what's missing, who controls what.</p></div>
+      <div class="step"><span class="num">03</span><h3>Propose</h3><p>A clear recommendation with a defined scope and investment. No mystery, no upsell theater.</p></div>
+      <div class="step"><span class="num">04</span><h3>Build</h3><p>Design, development and setup — with progress you can see, not silence followed by a reveal.</p></div>
+      <div class="step"><span class="num">05</span><h3>Launch</h3><p>Verified, tested, documented and handed over properly. You know what exists and where.</p></div>
+      <div class="step"><span class="num">06</span><h3>Grow</h3><p>For those who want it: an ongoing relationship to keep the presence sharp and moving.</p></div>
+    </div>
+    <p class="method-note reveal">Every engagement is scoped to the business in front of us. That's why there's no pricing table on this page — the honest answer to "what does it cost" starts with "what do you have, and what do you need."</p>
+  </div>
+</section>
+
+<!-- ================= 06 · THE SYSTEM — protected ================= -->
+<section class="sys-sec" id="loose-ends" aria-labelledby="sys-h">
+  <div class="sys-tall" data-scrub="sys">
+    <div class="sys-stage">
+      <div class="wrap">
+        <div class="sys-head">
+          <span class="num">06 / THE SYSTEM</span>
+          <p>Ask a growing business where its digital pieces live.</p>
+        </div>
+      </div>
+      <div class="wrap">
+        <div class="sys-field" role="img" aria-label="Scattered pieces of a typical business's digital infrastructure — domain at GoDaddy with an expired card on file, hosting somewhere else, email through a third provider, a Facebook page made by a former employee, a logo saved as FINAL_v7 in an unknown location, passwords nobody can find, a developer who no longer responds — aligning into one ordered register.">
+          <div class="frag" style="--row:0;--sx:-9vw;--sy:3vh;--sr:-2.4deg"><span class="k">A</span><span class="fk">Domain</span><span class="fv">At GoDaddy, card expired</span></div>
+          <div class="frag" style="--row:1;--sx:11vw;--sy:-4vh;--sr:1.8deg"><span class="k">B</span><span class="fk">Hosting</span><span class="fv">Somewhere else entirely</span></div>
+          <div class="frag" style="--row:2;--sx:-13vw;--sy:-2vh;--sr:2.2deg"><span class="k">C</span><span class="fk">Email</span><span class="fv">Through a third provider</span></div>
+          <div class="frag" style="--row:3;--sx:8vw;--sy:5vh;--sr:-1.6deg"><span class="k">D</span><span class="fk">Facebook</span><span class="fv">Made by a former employee</span></div>
+          <div class="frag" style="--row:4;--sx:-7vw;--sy:-5vh;--sr:1.4deg"><span class="k">E</span><span class="fk">Logo</span><span class="fv">FINAL_v7 — location unknown</span></div>
+          <div class="frag" style="--row:5;--sx:12vw;--sy:2vh;--sr:-2deg"><span class="k">F</span><span class="fk">Passwords</span><span class="fv">Nobody is sure</span></div>
+          <div class="frag" style="--row:6;--sx:-10vw;--sy:4vh;--sr:2.6deg"><span class="k">G</span><span class="fk">Developer</span><span class="fv">No longer responding</span></div>
+        </div>
+      </div>
+      <div class="wrap">
+        <div class="sys-close">
+          <h2 id="sys-h">One business. <em>It should feel like one system.</em><span class="dotr" aria-hidden="true"></span></h2>
+          <p>Most companies don't have a website problem or a logo problem — they have a <b>system problem</b>. Pieces bought at different times, from different people, connected to nothing. We connect the pieces, fix what matters, <b>document everything, and hand it back properly.</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 · OWNERSHIP — THE OXBLOOD FIELD ================= -->
+<section class="own" id="ownership" aria-labelledby="own-h">
+  <span class="own-wipe" aria-hidden="true"></span>
+  <span class="own-ghost" aria-hidden="true">AMRI</span>
+  <div class="wrap">
+    <div class="own-mark"><span class="sq" aria-hidden="true"></span>07 / Ownership</div>
+    <h2 id="own-h">Your business. Your accounts. Your assets.</h2>
+    <div class="own-grid">
+      <p>We build the system and make sure you understand what you own. Domains, profiles, files and business accounts belong to you — <b>configured, tested, documented and transferred.</b></p>
+      <p>We earn the ongoing relationship; we don't engineer it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 · ABOUT ================= -->
+<section class="sec" id="about" aria-labelledby="about-h">
+  <div class="wrap">
+    <div class="chapter reveal">
+      <div class="ch-mark">
+        <span class="ch-no">08</span>
+        <span class="ch-label">About</span>
+      </div>
+      <div>
+        <h2 id="about-h">Built around one observation.</h2>
+      </div>
+    </div>
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <p>AMRI Group is a founder-led Atlanta studio built around a simple observation: <b>some of the best businesses we meet look nothing like themselves online.</b></p>
+        <p>The work is strong. The reputation is real. But the website is a decade behind, the accounts are scattered across old providers, the brand has drifted, and nobody is quite sure who owns what. Fixing the website alone doesn't fix that — the system around it stays broken.</p>
+        <p>So that's what we build: brand, web and digital infrastructure brought into <b>one professional system that finally reflects the business behind it</b> — designed carefully, documented completely, and handed back to the people it belongs to.</p>
+      </div>
+      <div class="reveal d1">
+        <p class="pull">We help businesses look as established online as they are in real life.</p>
+      </div>
+    </div>
+    <div class="about-band reveal">
+      <span>Structure <b>Founder-led</b></span>
+      <span>Focus <b>Brand · Web · Presence · Growth</b></span>
+      <span>Model <b>Consultation-led</b></span>
+      <span>Principle <b>Clients own their assets</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOCAL BAND ================= -->
+<div class="local reveal">
+  <div class="wrap">
+    <span class="loc-a"><span class="sq" aria-hidden="true"></span>Atlanta, Georgia</span>
+    <span class="loc-b">Working with businesses across Metro Atlanta and beyond</span>
+  </div>
+</div>
+
+<!-- ================= 09 · START — the closing poster ================= -->
+<section class="close-sec" id="contact" aria-labelledby="contact-h">
+  <div class="wrap">
+    <div class="close-head reveal">
+      <span class="num">09 / START</span>
+      <h2 id="contact-h">You've already built the business. Let's build what people see.</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-lede reveal">
+        <p class="sub">Tell us where the business is today. We'll take an honest look and tell you what we'd do — and what we wouldn't.</p>
+        <div class="next">
+          <h4>What happens next</h4>
+          <ol>
+            <li>We read what you send. A person, not a routing rule.</li>
+            <li>A personal reply, usually within one business day.</li>
+            <li>A short call, then an honest look at what already exists.</li>
+            <li>A written recommendation with a defined scope — or a straight answer that you don't need us yet.</li>
+          </ol>
+        </div>
+        <div class="direct">
+          <span class="eyebrow">Or write to us directly</span>
+          <a href="mailto:contact@amri-group.pro">contact@amri-group.pro</a>
+          <p class="micro">No packages to choose from.<br>No obligation.<br>A conversation first, always.</p>
+        </div>
+      </div>
+
+      <!-- EXPERIMENT NOTE: endpoint intentionally left empty, mirroring production.
+           Submitting opens a pre-addressed email draft. -->
+      <form class="consult reveal d1" novalidate data-endpoint="" data-mail="contact@amri-group.pro">
+        <div class="f-row">
+          <div class="f-block">
+            <label for="f-name">Name<span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="f-name" name="name" autocomplete="name" required>
+            <span class="err">Please add your name.</span>
+          </div>
+          <div class="f-block">
+            <label for="f-biz">Business name</label>
+            <input type="text" id="f-biz" name="business" autocomplete="organization">
+          </div>
+        </div>
+        <div class="f-row">
+          <div class="f-block">
+            <label for="f-email">Email<span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="f-email" name="email" autocomplete="email" required>
+            <span class="err">We'll need a valid email to reply.</span>
+          </div>
+          <div class="f-block">
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" name="phone" autocomplete="tel">
+          </div>
+        </div>
+        <div class="f-block">
+          <label for="f-site">Website, if one exists</label>
+          <input type="url" id="f-site" name="website" placeholder="https://" autocomplete="url">
+        </div>
+        <fieldset>
+          <legend>What best describes where you are?</legend>
+          <label class="opt"><input type="radio" name="stage" value="starting"><span>Starting something new</span></label>
+          <label class="opt"><input type="radio" name="stage" value="rebuild"><span>My website / brand needs rebuilding</span></label>
+          <label class="opt"><input type="radio" name="stage" value="presence"><span>I need a stronger online presence</span></label>
+          <label class="opt"><input type="radio" name="stage" value="grow"><span>I want to grow what we already have</span></label>
+          <label class="opt"><input type="radio" name="stage" value="unsure"><span>I'm not sure — I'd like your recommendation</span></label>
+        </fieldset>
+        <fieldset>
+          <legend>What would you like help with?</legend>
+          <div class="opt-grid">
+            <label class="opt"><input type="checkbox" name="help" value="website"><span>Website</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="branding"><span>Branding</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="social"><span>Social presence</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="google"><span>Google Business</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="email"><span>Business email / systems</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="seo"><span>SEO / growth</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="collateral"><span>Marketing collateral</span></label>
+            <label class="opt"><input type="checkbox" name="help" value="unsure"><span>Not sure yet</span></label>
+          </div>
+        </fieldset>
+        <div class="f-block">
+          <label for="f-msg">Anything else we should know?</label>
+          <textarea id="f-msg" name="message" rows="4"></textarea>
+        </div>
+        <div class="submit-row">
+          <button type="submit" class="cta-btn on-dark">Start a conversation</button>
+          <span class="form-note">We reply personally. No newsletter, no drip sequence.</span>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="wordmark" aria-label="AMRI Group"><span class="wm-a">AMRI</span><span class="wm-g">Group</span></span>
+        <div class="ft">Brand · Web · Digital Presence<br>Atlanta, Georgia</div>
+      </div>
+      <nav class="foot-col" aria-label="Footer — pages">
+        <h4>AMRI Group</h4>
+        <ul>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#capabilities">What We Do</a></li>
+          <li><a href="#how-we-work">How We Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@amri-group.pro">contact@amri-group.pro</a></li>
+          <li><a href="#contact">Start a project</a></li>
+          <li>Atlanta, Georgia</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>&copy; 2026 AMRI Group · ALT-A study</span>
+      <span class="foot-appearance">
+        <button class="theme-btn" type="button" data-theme-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <g class="ti-sun"><circle cx="12" cy="12" r="4"/><g class="ti-rays">
+              <line x1="12" y1="2.4" x2="12" y2="4.6"/><line x1="12" y1="19.4" x2="12" y2="21.6"/>
+              <line x1="2.4" y1="12" x2="4.6" y2="12"/><line x1="19.4" y1="12" x2="21.6" y2="12"/>
+              <line x1="5.4" y1="5.4" x2="7" y2="7"/><line x1="17" y1="17" x2="18.6" y2="18.6"/>
+              <line x1="5.4" y1="18.6" x2="7" y2="17"/><line x1="17" y1="7" x2="18.6" y2="5.4"/>
+            </g></g>
+            <g class="ti-moon"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6 7.8 7.8 0 1 0 20.4 14.6Z"/></g>
+          </svg>
+        </button>
+        <button class="sys-link" type="button" data-theme-system aria-pressed="false">Use system</button>
+      </span>
+      <span>Atlanta, Georgia</span>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ----- masthead scroll state ----- */
+  var head = document.querySelector("header.masthead");
+  function headState(){ head.classList.toggle("scrolled", window.scrollY > 8); }
+  headState();
+  window.addEventListener("scroll", headState, { passive:true });
+
+  /* ----- theme: one toggle, System retained (production logic, unchanged) ----- */
+  var root = document.documentElement;
+  var themeMq = window.matchMedia("(prefers-color-scheme: dark)");
+  var toggles = document.querySelectorAll("[data-theme-toggle]");
+  var sysBtns = document.querySelectorAll("[data-theme-system]");
+  function currentMode(){ return root.getAttribute("data-theme-mode") || "system"; }
+  function resolved(){ return root.getAttribute("data-theme") === "dark" ? "dark" : "light"; }
+  function syncControls(){
+    var isDark = resolved() === "dark";
+    var onSystem = currentMode() === "system";
+    var target = isDark ? "light" : "dark";
+    toggles.forEach(function(b){
+      b.setAttribute("aria-label", "Switch to " + target + " theme");
+      b.setAttribute("title", "Theme: " + (isDark ? "Dark" : "Light") + (onSystem ? " (system)" : ""));
+    });
+    sysBtns.forEach(function(b){
+      b.setAttribute("aria-pressed", String(onSystem));
+      b.disabled = onSystem;
+    });
+  }
+  function applyTheme(mode, persist){
+    var t = mode === "system" ? (themeMq.matches ? "dark" : "light") : mode;
+    root.setAttribute("data-theme", t);
+    root.setAttribute("data-theme-mode", mode);
+    if(persist){
+      try{
+        if(mode === "system") localStorage.removeItem("amri-theme");
+        else localStorage.setItem("amri-theme", mode);
+      }catch(e){}
+    }
+    syncControls();
+  }
+  applyTheme(currentMode(), false);
+  toggles.forEach(function(b){
+    b.addEventListener("click", function(){ applyTheme(resolved() === "dark" ? "light" : "dark", true); });
+  });
+  sysBtns.forEach(function(b){ b.addEventListener("click", function(){ applyTheme("system", true); }); });
+  var mqHandler = function(){ if(currentMode() === "system") applyTheme("system", false); };
+  if(themeMq.addEventListener) themeMq.addEventListener("change", mqHandler);
+  else if(themeMq.addListener) themeMq.addListener(mqHandler);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.classList.add("theme-anim"); }); });
+
+  /* ----- mobile menu ----- */
+  var mnav = document.getElementById("mnav");
+  var openBtn = document.querySelector(".menu-btn");
+  var closeBtn = document.querySelector(".mnav-close");
+  function setMenu(open){
+    mnav.classList.toggle("open", open);
+    mnav.setAttribute("aria-hidden", String(!open));
+    openBtn.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("lock", open);
+    if(open){ closeBtn.focus(); } else { openBtn.focus(); }
+  }
+  openBtn.addEventListener("click", function(){ setMenu(true); });
+  closeBtn.addEventListener("click", function(){ setMenu(false); });
+  mnav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", function(){ setMenu(false); }); });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && mnav.classList.contains("open")) setMenu(false);
+  });
+
+  /* ----- MOTION 1 · hero: word assembly + the aperture opening ----- */
+  var hero = document.querySelector(".hero");
+  if(reduce){ hero.classList.add("go"); }
+  else { requestAnimationFrame(function(){ requestAnimationFrame(function(){ hero.classList.add("go"); }); }); }
+
+  /* ----- reveal on scroll (mechanical, once) ----- */
+  var revealEls = document.querySelectorAll(".reveal, .path, form.consult, .own");
+  var ledger = document.querySelector(".ledger");
+  if(reduce || !("IntersectionObserver" in window)){
+    root.classList.add("no-io");
+    revealEls.forEach(function(el){ el.classList.add("in"); });
+    if(ledger) ledger.classList.add("set");
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add("in");
+          if(ledger && (en.target.contains(ledger) || en.target === ledger)) ledger.classList.add("set");
+          io.unobserve(en.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    revealEls.forEach(function(el){ io.observe(el); });
+    /* failsafe: never leave content invisible */
+    window.setTimeout(function(){
+      revealEls.forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if(!el.classList.contains("in") && r.top < window.innerHeight && r.bottom > 0){
+          el.classList.add("in");
+          if(ledger && (el.contains(ledger) || el === ledger)) ledger.classList.add("set");
+        }
+      });
+    }, 1200);
+  }
+
+  /* ----- scroll-scrub: aperture drift · method progress ·
+           MOTION 2 exhibition parallax · MOTION 3 system alignment ----- */
+  var heroEl = document.querySelector(".hero");
+  var methodSec = document.querySelector('[data-scrub="method"]');
+  var sysTall = document.querySelector('[data-scrub="sys"]');
+  var sysFrags = sysTall ? sysTall.querySelectorAll(".frag, .sys-close") : [];
+  var steps = methodSec ? Array.prototype.slice.call(methodSec.querySelectorAll(".step")) : [];
+  var walls = Array.prototype.slice.call(document.querySelectorAll("[data-wall]"));
+  function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function easeInOut(t){ return t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2; }
+  var ticking = false;
+  function scrub(){
+    ticking = false;
+    var vh = window.innerHeight;
+
+    if(heroEl){
+      var rh = heroEl.getBoundingClientRect();
+      heroEl.style.setProperty("--gp", clamp01(-rh.top / Math.max(rh.height, 1)).toFixed(4));
+    }
+    if(methodSec){
+      var r = methodSec.getBoundingClientRect();
+      var p = clamp01((vh*0.75 - r.top) / (r.height*0.9));
+      methodSec.style.setProperty("--gp", p.toFixed(4));
+      steps.forEach(function(s,i){ s.classList.toggle("on", p >= (i+0.5)/steps.length); });
+    }
+    if(sysTall){
+      var r2 = sysTall.getBoundingClientRect();
+      var scrollable = r2.height - vh;
+      var p2 = scrollable > 0 ? clamp01(-r2.top / scrollable) : 1;
+      if(p2 > 0.97) p2 = 1; else if(p2 < 0.02) p2 = 0;
+      var e = easeInOut(p2);
+      sysFrags.forEach(function(f){ f.style.setProperty("--sp", e.toFixed(4)); });
+    }
+    /* the exhibition: each wall's image drifts slightly against its frame
+       across the wall's own pass through the viewport. Range is ~22px —
+       enough to feel physical, not enough to notice as an effect. */
+    walls.forEach(function(w){
+      var rw = w.getBoundingClientRect();
+      if(rw.bottom < -80 || rw.top > vh + 80) return;
+      var pw = clamp01((vh - rw.top) / (vh + rw.height));
+      w.style.setProperty("--wp", pw.toFixed(4));
+    });
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(scrub); } }
+  if(reduce){
+    if(sysTall) sysFrags.forEach(function(f){ f.style.setProperty("--sp","1"); });
+    steps.forEach(function(s){ s.classList.add("on"); });
+    if(methodSec) methodSec.style.setProperty("--gp","1");
+  } else {
+    window.addEventListener("scroll", onScroll, { passive:true });
+    window.addEventListener("resize", onScroll, { passive:true });
+    scrub();
+  }
+
+  /* ----- the exhibition walls: open the case study -----
+     The production portal behaviour is preserved exactly; only the
+     surface that carries it changed from a card to a wall. */
+  walls.forEach(function(w){
+    var dlg = document.getElementById(w.getAttribute("data-cs"));
+    var btn = w.querySelector("[data-open]");
+    if(!dlg || !btn) return;
+    btn.addEventListener("click", function(){
+      dlg.showModal();
+      document.body.classList.add("lock");
+    });
+    dlg.addEventListener("close", function(){
+      document.body.classList.remove("lock");
+      btn.focus();
+    });
+    dlg.addEventListener("click", function(e){ if(e.target === dlg) dlg.close(); });
+    dlg.querySelectorAll("[data-close]").forEach(function(b){
+      b.addEventListener("click", function(){ dlg.close(); });
+    });
+  });
+
+  /* ----- consultative form (production logic, unchanged) ----- */
+  var form = document.querySelector("form.consult");
+  var statusEl = form.querySelector(".form-status");
+  function setInvalid(input, invalid){
+    var block = input.closest(".f-block");
+    if(block) block.classList.toggle("invalid", invalid);
+    input.setAttribute("aria-invalid", String(invalid));
+  }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = form.querySelector("#f-name");
+    var email = form.querySelector("#f-email");
+    var ok = true;
+    setInvalid(name, !name.value.trim()); if(!name.value.trim()) ok = false;
+    var badEmail = !validEmail(email.value.trim());
+    setInvalid(email, badEmail); if(badEmail) ok = false;
+    if(!ok){ (!name.value.trim() ? name : email).focus(); return; }
+    var data = new FormData(form);
+    var endpoint = form.getAttribute("data-endpoint");
+    if(endpoint){
+      fetch(endpoint, { method:"POST", body:data })
+        .then(function(r){
+          if(!r.ok) throw new Error("bad status");
+          statusEl.textContent = "Thank you — your note is on its way. We reply personally, usually within one business day.";
+          statusEl.classList.add("show");
+          form.reset();
+        })
+        .catch(function(){
+          statusEl.textContent = "That didn't go through. Please try again, or email us directly at " + form.getAttribute("data-mail") + ".";
+          statusEl.classList.add("show");
+        });
+    } else {
+      var lines = [];
+      lines.push("Name: " + data.get("name"));
+      if(data.get("business")) lines.push("Business: " + data.get("business"));
+      lines.push("Email: " + data.get("email"));
+      if(data.get("phone")) lines.push("Phone: " + data.get("phone"));
+      if(data.get("website")) lines.push("Website: " + data.get("website"));
+      if(data.get("stage")) lines.push("Where they are: " + data.get("stage"));
+      var helps = data.getAll("help"); if(helps.length) lines.push("Help with: " + helps.join(", "));
+      if(data.get("message")) lines.push("Message: " + data.get("message"));
+      var mail = form.getAttribute("data-mail");
+      window.location.href = "mailto:" + mail
+        + "?subject=" + encodeURIComponent("New project inquiry — AMRI Group")
+        + "&body=" + encodeURIComponent(lines.join("\n"));
+      statusEl.textContent = "Your email app should open with everything filled in. If it doesn't, write to " + mail + " directly.";
+      statusEl.classList.add("show");
+    }
+  });
+  ["#f-name","#f-email"].forEach(function(sel){
+    var input = form.querySelector(sel);
+    input.addEventListener("input", function(){ setInvalid(input, false); });
+  });
+})();
+</script>
+</body>
+</html>

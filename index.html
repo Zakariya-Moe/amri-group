@@ -41,7 +41,13 @@
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&f[]=clash-grotesk@400,500,600&display=swap" rel="stylesheet">
+<!-- Fontshare families are requested SEPARATELY and deliberately.
+     A single combined request (?f[]=switzer&f[]=clash-grotesk) silently returned
+     Switzer only — Clash Grotesk never entered document.fonts and every display
+     heading fell back to Switzer. Verified in a real Chromium render.
+     Keep these as two requests. Do not recombine them. -->
+<link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500,600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
 /* Theme bootstrap — runs before first paint to prevent a flash of the wrong theme.
@@ -86,7 +92,13 @@
   --c-ivory2:#F7F4EE;
   --red:#781F2A;            /* oxblood — rare enough that every appearance matters */
   --red-deep:#5E1821;
-  --red-soft:#8E3540;       /* dark-theme accent lift — same family, readable on charcoal */
+  /* dark-theme accent lift — same hue (352°), lifted until it is actually
+     readable on charcoal. The previous value (#8E3540) measured 2.3:1 against
+     the dark page and 2.4:1 on the dark bands, which failed every piece of
+     10-11px oxblood text in dark mode: the method numerals, the portal CTA,
+     the case-study eyebrow and the live-site link. This measures 5.2:1 on
+     --paper and 4.9:1 on --paper-2. Same family, finally legible. */
+  --red-soft:#C4737E;
 
   /* ---- theme tokens · LIGHT (default) ---- */
   color-scheme:light;
@@ -99,12 +111,33 @@
 
   --line:rgba(19,19,22,0.16);
   --line-2:rgba(19,19,22,0.30);
-  --muted:rgba(19,19,22,0.58);
-  --muted-2:rgba(19,19,22,0.40);
+  /* Both muted tiers were below AA on paper (4.34:1 and 2.50:1). --muted-2
+     carries nearly all the mono metadata on this site — section labels, portal
+     eyebrows, case-study meta, the scroll cue — at 10-11px with wide tracking,
+     which is the hardest text here to read, not the easiest. Both are lifted
+     to pass, with the step between them preserved: 5.9:1 over 4.7:1. */
+  --muted:rgba(19,19,22,0.68);
+  --muted-2:rgba(19,19,22,0.60);
 
   --shadow:rgba(19,19,22,.35);
   --scrim:247,244,238;      /* rgb of --paper-2, used over project imagery */
+  /* Dark theme lays an INK scrim over the same screenshots. Two of the four
+     projects (Linework, Helio) are bright pages, so ivory type needs a little
+     more cover there than ink type needs over them in daylight. One
+     multiplier, applied to the directional wedge only. */
+  --po-scrim-boost:1;
   --hero-2:rgba(19,19,22,0.74);   /* hero line two — ~74% emphasis: hierarchy, not watermark */
+
+  /* ---- V2.4 · the oxblood field ----
+     The Ownership section is the page's one saturated moment. Same oxblood
+     family as every other accent — only the area changes. Ivory and its muted
+     tiers are measured against the field, not against paper. */
+  --field:var(--red);
+  --field-fg:#F5F0E6;
+  --field-muted:rgba(245,240,230,0.72);   /* 5.4:1 on --red */
+  --field-muted-2:rgba(245,240,230,0.62);
+  --field-line:rgba(245,240,230,0.24);
+  --field-line-2:rgba(245,240,230,0.36);
 
   /* hero atmosphere · light — four ingredients, none of them announcing itself:
      champagne light from upper right, oxblood warmth low left,
@@ -121,8 +154,10 @@
 
   --line-inv:rgba(240,235,225,0.16);
   --line-inv-2:rgba(240,235,225,0.30);
-  --muted-inv:rgba(240,235,225,0.58);
-  --muted-inv-2:rgba(240,235,225,0.40);
+  --muted-inv:rgba(240,235,225,0.58);   /* 5.8:1 on the bands */
+  /* was 0.40 = 3.3:1 on the bands, and it carries the footer column heads,
+     the System fragment keys and every form micro-label. Now 4.8:1. */
+  --muted-inv-2:rgba(240,235,225,0.52);
 
   --gutter:clamp(20px,5vw,72px);
   --sans:"Switzer","Helvetica Neue",Arial,sans-serif;
@@ -149,11 +184,12 @@
 
   --line:rgba(240,235,225,0.13);
   --line-2:rgba(240,235,225,0.26);
-  --muted:rgba(240,235,225,0.60);
-  --muted-2:rgba(240,235,225,0.40);
+  --muted:rgba(240,235,225,0.60);   /* 6.1:1 on charcoal — already fine */
+  --muted-2:rgba(240,235,225,0.52); /* was 0.40 = 3.3:1; now 4.8:1 */
 
   --shadow:rgba(0,0,0,.55);
   --scrim:30,30,34;
+  --po-scrim-boost:1.12;
   --hero-2:rgba(240,235,225,0.72); /* matched perceptual hierarchy on charcoal */
 
   /* hero atmosphere · dark — the same room after hours */
@@ -165,12 +201,20 @@
   /* bands sit a step deeper than the page so the sequence keeps its rhythm */
   --band:#0F0F12;
   --band-2:#1A1A1F;
+
+  /* The field at night. --red (#781F2A) against a #17171A page glares; the
+     deep tone sits in the room instead of shouting across it, and it is still
+     unmistakably red rather than brown-black — 4.4x the luminance of the page
+     around it. Ivory measures 11.2:1 on it, --field-muted 5.1:1. */
+  --field:var(--red-deep);
+  --field-muted:rgba(245,240,230,0.72);
+  --field-muted-2:rgba(245,240,230,0.60);
 }
 /* short, contained theme transition — environments only, per reduced-motion rules */
 html.theme-anim body,
 html.theme-anim section,
 html.theme-anim header.masthead,
-html.theme-anim .po-inner,
+html.theme-anim .wall,
 html.theme-anim .ledger,
 html.theme-anim .path,
 html.theme-anim .step{
@@ -191,7 +235,11 @@ body{
   overflow-x:clip;
 }
 body.lock{overflow:hidden}
-.wrap{max-width:1240px;margin:0 auto;padding:0 var(--gutter)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--gutter)}
+/* The wide measure. Reserved for compositions that are meant to feel
+   architectural rather than readable: the masthead, the hero, the exhibition
+   ledger. Reading columns stay on .wrap. */
+.wrap-wide{max-width:1520px;margin:0 auto;padding:0 var(--gutter)}
 img,svg{display:block}
 a{color:inherit}
 ::selection{background:var(--ink);color:var(--paper)}
@@ -203,6 +251,18 @@ a{color:inherit}
 }
 .num{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;color:var(--muted-2)}
 h1,h2,h3{font-family:var(--arch);font-weight:500;line-height:1.02;letter-spacing:-0.015em}
+/* ---------- rhetorical line control ----------
+   Clash Grotesk sets ~11% wider than Switzer. When the font loading bug was
+   fixed, every heading rewrapped — some for the better, several straight
+   through the middle of a deliberate couplet ("Your business. Your / accounts.
+   Your assets.").
+   So the protected structures are locked in MARKUP with .hln rather than left
+   to a ch-width that happens to break in the right place at one viewport.
+   Each locked line balances internally, so when a line is genuinely too long
+   for the column it splits evenly instead of leaving one orphaned word. */
+.hln{display:block;text-wrap:balance}
+/* single-sentence heads have no couplet to protect — balance is the whole job */
+.bal{text-wrap:balance}
 p{max-width:62ch}
 .lede{font-size:clamp(17px,2vw,21px);line-height:1.5;letter-spacing:-0.01em;max-width:56ch}
 .body-muted{color:var(--muted);max-width:60ch}
@@ -233,8 +293,10 @@ header.masthead{
   transition:border-color .35s var(--ease);
 }
 header.masthead.scrolled{border-bottom-color:var(--line-2)}
-.masthead .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:20px}
-.brand{text-decoration:none;display:inline-flex;align-items:baseline;gap:10px}
+/* the masthead shares the hero's wide measure, so the wordmark sits on the
+   same left edge as "Your business grew." rather than inset from it */
+.masthead .wrap-wide{display:flex;align-items:center;justify-content:space-between;height:64px;gap:24px}
+.brand{text-decoration:none;display:inline-flex;align-items:baseline;gap:10px;padding:7px 0}
 .brand .bw{
   font-family:var(--sans);font-weight:600;letter-spacing:0.18em;font-size:13px;white-space:nowrap;
   transition:letter-spacing .35s var(--ease);
@@ -311,7 +373,7 @@ nav.primary a.nl:hover::after{right:0}
 
 /* the discreet route back to OS behaviour */
 .sys-link{
-  background:none;border:0;padding:4px 0;cursor:pointer;
+  background:none;border:0;padding:10px 0;cursor:pointer;
   font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
   color:var(--muted-2);transition:color .25s var(--ease);
 }
@@ -335,12 +397,12 @@ footer .appearance{gap:12px}
    misaligned and settles into perfect composition:
    disorganized -> organized, performed once, then still.
    ============================================================ */
-.hero{position:relative;overflow:clip;padding:clamp(72px,11vw,140px) 0 clamp(28px,3.4vw,44px)}
+.hero{position:relative;overflow:clip;padding:clamp(48px,7vw,96px) 0 0}
 /* the atmosphere — premium paper under architectural light.
    Three layered radial fields + a whisper of grain. Quiet enough
    that most visitors will feel it rather than see it. */
 .hero::before{
-  content:"";position:absolute;inset:-22% -12%;pointer-events:none;z-index:0;
+  content:"";position:absolute;inset:-22% -12% 30%;pointer-events:none;z-index:0;
   background:
     radial-gradient(ellipse 82% 60% at 84% 2%,  var(--atmo-light),   transparent 60%),
     radial-gradient(ellipse 56% 46% at 8% 92%,  var(--atmo-warm),    transparent 64%),
@@ -353,7 +415,7 @@ footer .appearance{gap:12px}
    headline instead of being cropped off the right edge. */
 @media(max-width:760px){
   .hero::before{
-    inset:-16% -20%;
+    inset:-16% -20% 34%;
     background:
       radial-gradient(ellipse 96% 44% at 62% 0%,  var(--atmo-light),   transparent 62%),
       radial-gradient(ellipse 84% 40% at 12% 96%, var(--atmo-warm),    transparent 66%),
@@ -371,55 +433,68 @@ footer .appearance{gap:12px}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 }
 [data-theme="dark"] .hero::after{opacity:.07}
-.hero .wrap{position:relative;z-index:1}
-/* scroll cue — one quiet architectural rule instead of a strip of cards */
-.scroll-cue{
-  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;
-  margin-top:clamp(34px,5vw,56px);
-}
-.scroll-cue .sc-t{font-family:var(--mono);font-size:9.5px;letter-spacing:0.34em;text-transform:uppercase;color:var(--muted-2)}
-.scroll-cue .sc-l{width:1px;height:44px;background:var(--line-2);position:relative;overflow:hidden}
-.scroll-cue .sc-l::after{
-  content:"";position:absolute;left:0;top:-100%;width:100%;height:100%;background:var(--accent);
-  animation:cue 2.6s var(--ease-slow) infinite;
-}
-@keyframes cue{0%{top:-100%}55%{top:100%}100%{top:100%}}
+.hero .wrap-wide{position:relative;z-index:1}
 .hero-meta{
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   font-family:var(--mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);
-  padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:clamp(36px,6vw,64px);
+  padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:clamp(30px,4.6vw,58px);
 }
-.hero h1{
-  font-size:clamp(42px,8.4vw,104px);
-  letter-spacing:-0.02em;line-height:0.98;max-width:12ch;
+/* ---- the two halves of the sentence ----
+   The hero is typography-led. Its impact comes from scale, asymmetry and the
+   distance between the two statements — not from imagery. The portfolio makes
+   its case in Selected Work, where it can be shown properly; here the sentence
+   is the whole composition.
+
+   One h1 carries the complete statement to assistive tech; the visible halves
+   are aria-hidden so nothing is announced twice. */
+.hero-h1{
+  margin:0;font-size:clamp(43px,11.2vw,164px);line-height:0.84;letter-spacing:-0.04em;
 }
-.hero h1 .hl1{display:block}
-.hero h1 .hl2{display:block;color:var(--hero-2)}
+.hero .hl1{display:block;max-width:13ch}
+/* The second statement answers the first from the opposite corner, at roughly
+   55% of its scale. The asymmetry is the argument: one voice states the fact,
+   the other replies. No ch-cap — a 15ch measure orphaned "too." onto its own
+   line at every desktop width, and the reply has to read as one breath. */
+.hero .hl2{
+  display:block;margin:clamp(26px,4vw,58px) 0 0 auto;text-align:right;
+  font-family:var(--arch);font-weight:500;text-wrap:balance;
+  font-size:clamp(27px,6.3vw,92px);line-height:0.9;letter-spacing:-0.03em;color:var(--hero-2);
+}
+/* the one rule that draws itself between the two statements — an existing AMRI
+   device, not a new one, doing the structural job the aperture used to do */
+.hero-rule{
+  height:1px;background:var(--line-2);transform:scaleX(0);transform-origin:left;
+  margin-top:clamp(30px,5vw,74px);
+}
+.hero.go .hero-rule{transform:scaleX(1);transition:transform 1.1s var(--ease-slow) .5s}
 /* assembly mechanics — each word is masked; the inner slab starts displaced */
-.aw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.06em;margin-bottom:-.06em}
+.aw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
 .awi{display:inline-block;transform:translate(var(--ax,0),var(--ay,110%)) rotate(var(--ar,0deg));will-change:transform}
-.hero.go .awi{transform:none;transition:transform .9s var(--ease-slow)}
-.hero.go .hl1 .awi{transition-duration:.7s}
+.hero.go .awi{transform:none;transition:transform 1s var(--ease-slow)}
+.hero.go .hl1 .awi{transition-duration:.78s}
+/* the signature reveal, in three architectural beats:
+   the statement arrives -> the rule draws -> the reply enters */
 .hero.go [data-d="1"]{transition-delay:.05s}
-.hero.go [data-d="2"]{transition-delay:.12s}
-.hero.go [data-d="3"]{transition-delay:.34s}
-.hero.go [data-d="4"]{transition-delay:.44s}
-.hero.go [data-d="5"]{transition-delay:.54s}
-.hero.go [data-d="6"]{transition-delay:.64s}
-/* the rule that draws itself under the settled composition */
-.hero-rule{height:1px;background:var(--line-2);transform:scaleX(0);transform-origin:left;margin-top:clamp(28px,4vw,44px)}
-.hero.go .hero-rule{transform:scaleX(1);transition:transform 1s var(--ease-slow) .8s}
+.hero.go [data-d="2"]{transition-delay:.13s}
+.hero.go [data-d="3"]{transition-delay:.86s}
+.hero.go [data-d="4"]{transition-delay:.94s}
+.hero.go [data-d="5"]{transition-delay:1.02s}
+.hero.go [data-d="6"]{transition-delay:1.10s}
+
 .hero-low{
-  display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
-  gap:clamp(28px,5vw,72px);align-items:end;margin-top:clamp(28px,4vw,44px);
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:clamp(24px,4vw,64px);align-items:end;
+  margin-top:clamp(38px,6vw,88px);padding-bottom:clamp(64px,9vw,120px);
 }
-@media(max-width:760px){.hero-low{grid-template-columns:1fr}}
+@media(max-width:820px){.hero-low{grid-template-columns:1fr;gap:26px}}
 .hero-low .lede{color:var(--ink)}
 .hero-fade{opacity:0;transform:translateY(14px)}
-.hero.go .hero-fade{opacity:1;transform:none;transition:opacity .7s var(--ease) 1s,transform .7s var(--ease) 1s}
-.hero.go .hero-fade.f2{transition-delay:1.15s}
+.hero.go .hero-fade{opacity:1;transform:none;transition:opacity .8s var(--ease) 1.3s,transform .8s var(--ease) 1.3s}
+.hero.go .hero-fade.f0{transition-delay:.05s}
+.hero.go .hero-fade.f1{transition-delay:1.05s}
+.hero.go .hero-fade.f2{transition-delay:1.44s}
 .hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:flex-start}
-@media(min-width:761px){.hero-actions{justify-content:flex-end}}
+@media(min-width:821px){.hero-actions{justify-content:flex-end}}
 .ghost-btn{
   display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
   color:var(--ink);text-decoration:none;padding:12px 22px;border:1px solid var(--line-2);
@@ -427,12 +502,66 @@ footer .appearance{gap:12px}
 }
 .ghost-btn:hover{border-color:var(--ink)}
 
-/* ---------- section scaffold ---------- */
-section{padding:clamp(64px,9vw,120px) 0;border-top:1px solid var(--line)}
-.sec-head{display:grid;grid-template-columns:150px 1fr;gap:clamp(20px,4vw,48px);align-items:start;margin-bottom:clamp(40px,6vw,72px)}
-@media(max-width:760px){.sec-head{grid-template-columns:1fr;gap:14px}}
-.sec-head h2{font-size:clamp(30px,4.6vw,52px);max-width:18ch}
-.sec-head .lede{margin-top:20px;color:var(--muted)}
+/* ---------- section scaffold — the chapter device ----------
+   The section number already existed as 11px mono ("03 / SELECTED WORK",
+   which wrapped to two awkward lines in the 150px rail). It is promoted to an
+   architectural numeral in the existing display face, with the name of the
+   chapter beneath it on a hairline. Same information, same palette, same
+   numbering, same mono system — an order of magnitude more presence.
+   The point is that the page should read as CHAPTERS, not as equally
+   padded modules. The numeral never competes with the headline: it tops out
+   at 96px against a 52px h2, and it sits in muted ink, not full ink. */
+/* ---- section tempo ----
+   V2.4 deliberately abandons one global section rhythm. Each chapter gets the
+   amount of air its job needs, so the page has tempo rather than pagination:
+   investigative sections are tight, the exhibition is expansive, Ownership is
+   a poster, the Atlanta band is a single breath. --sec-y is the only knob. */
+section{padding:var(--sec-y,clamp(84px,11vw,168px)) 0;border-top:1px solid var(--line)}
+#problem     {--sec-y:clamp(80px,10vw,150px)}   /* structured / investigative */
+#situations  {--sec-y:clamp(78px,9.5vw,140px)}  /* organised / clear */
+#capabilities{--sec-y:clamp(72px,8.6vw,128px)}  /* denser — a specimen sheet */
+#how-we-work {--sec-y:clamp(100px,13vw,200px)}  /* wide / procedural — a principle */
+#about       {--sec-y:clamp(92px,12vw,180px)}   /* editorial */
+#contact     {--sec-y:clamp(88px,11vw,156px)}   /* the closing poster */
+
+/* ---- the chapter device ----
+   The section number was 11px mono. It is now an architectural numeral in the
+   display face at up to 120px, sitting in its own rail with the chapter name
+   on a hairline beneath it. Same information, same palette, same numbering —
+   an order of magnitude more presence. This single promotion is what turns
+   eleven equally-padded modules into nine chapters. The numeral is
+   architecture; the label is information. Only one of them is loud. */
+.sec-head{display:grid;grid-template-columns:clamp(150px,17vw,260px) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:start;margin-bottom:clamp(44px,6vw,84px)}
+.ch-mark{position:relative;padding-top:.06em}
+.ch-no{
+  display:block;font-family:var(--arch);font-weight:500;
+  font-size:clamp(56px,7.4vw,120px);line-height:.78;letter-spacing:-0.04em;
+  color:var(--ink);
+}
+.ch-label{
+  display:block;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--muted-2);max-width:16ch;
+}
+.dark-sec .ch-no{color:var(--band-fg)}
+.dark-sec .ch-label{color:var(--muted-inv-2);border-top-color:var(--line-inv)}
+.sec-head h2{font-size:clamp(32px,5.4vw,72px);max-width:16ch;letter-spacing:-0.028em;line-height:0.99}
+.sec-head .lede{margin-top:clamp(20px,2.4vw,30px);color:var(--muted)}
+.dark-sec .sec-head .lede{color:var(--muted-inv)}
+/* Ownership and Start place their chapter mark outside the .sec-head grid,
+   so nothing constrains it and the label's hairline ran the full width of the
+   column — reading as a section divider rather than as the same chapter device
+   used everywhere else. Give it the rail width explicitly. */
+.own-band .ch-mark,.close-head .ch-mark{display:block;width:clamp(150px,17vw,260px)}
+/* Tablet and below: the numeral turns into a baseline rail beside its label.
+   A 120px numeral stacked over a 32px headline reads as a mistake on a phone,
+   so it drops to a scale that supports the headline instead of shouting past it. */
+@media(max-width:820px){
+  .sec-head{grid-template-columns:1fr;gap:18px}
+  .ch-mark,.own-band .ch-mark,.close-head .ch-mark{display:flex;align-items:baseline;gap:18px;width:auto;padding-top:0}
+  .ch-no{font-size:clamp(44px,13vw,64px)}
+  .ch-label{margin-top:0;padding-top:0;border-top:0;max-width:none}
+}
 
 /* dark sections */
 .dark-sec{background:var(--band);color:var(--band-fg);border-top:1px solid var(--band)}
@@ -514,7 +643,7 @@ section{padding:clamp(64px,9vw,120px) 0;border-top:1px solid var(--line)}
 .path:hover li::after{background:var(--accent)}
 .path .p-link{
   margin-top:auto;font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
-  color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:6px 0;
+  color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:9px 0;
 }
 .path .p-link .arr{transition:transform .25s var(--ease)}
 .path .p-link:hover{color:var(--accent)}
@@ -522,89 +651,204 @@ section{padding:clamp(64px,9vw,120px) 0;border-top:1px solid var(--line)}
 .paths-note{margin-top:22px;font-size:14.5px;color:var(--muted);max-width:70ch}
 
 /* ============================================================
-   04 · SELECTED WORK — the project portals
+   04 · SELECTED WORK — the exhibition
    Four worlds, labeled by the kind of work — not a client
-   directory. Hover: the portal steps forward; neighbors recede.
-   Click: an AMRI case-study experience opens over the page.
+   directory. Each project gets its own proportion, crop and
+   tonal environment; the AMRI system is the frame around them.
+   Opening a wall opens the same AMRI case study as before.
    ============================================================ */
-.work-sec{position:relative;overflow:clip}
+#work{--sec-y:0}
+.exh{position:relative}
+.exh-head{position:relative;overflow:clip;padding:clamp(84px,11vw,168px) 0 clamp(44px,6vw,80px)}
 /* the wordmark as architecture — an enormous cropped AMRI drifting
    behind the section head, moved gently by scroll */
 .work-ghost{
-  position:absolute;top:clamp(220px,34vw,420px);left:-2vw;
+  position:absolute;bottom:-.22em;left:-2vw;
   font-family:var(--arch);font-weight:500;letter-spacing:0.12em;
   font-size:clamp(150px,30vw,430px);line-height:.8;color:var(--ink);
   opacity:.035;white-space:nowrap;pointer-events:none;user-select:none;
   transform:translateX(calc(var(--gp,0) * -7vw));
 }
-.work-sec .sec-head,.work-sec .portals,.work-sec .work-foot{position:relative;z-index:1}
-.portals{
-  display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,28px);
-  perspective:1400px;
+.exh-head .wrap{position:relative;z-index:1}
+/* ---- THE WALLS ----
+   Four project worlds, not four equal cards. Each wall is a direct child of a
+   full-width container, so it bleeds edge to edge without 100vw or negative
+   margins. The AMRI system — numbering, mono register, hairlines, oxblood
+   square, type families — is the hanging apparatus and never changes. What
+   changes per project is proportion, tone, crop and side. */
+.wall{position:relative;border-top:1px solid var(--line);overflow:hidden}
+.wall-in{position:relative;display:grid;align-items:stretch;min-height:var(--wall-h,0)}
+.wall-art{position:relative;overflow:hidden;background:var(--paper-2)}
+/* ---- the art direction lives in the capture, not in the crop ----
+   Each wall image was framed on the live site for what that project actually
+   proves, and clipped so nothing is chopped at an edge. So the frame is sized
+   to the image's OWN ratio rather than the image being squeezed into a frame:
+   this in-flow spacer gives the art column the authored proportion, and the
+   picture is then displayed as it was composed — no zoom, no guessed
+   object-position, no scrim doing damage control over a client headline.
+   It also means every project gets a genuinely different proportion, which is
+   the point of an exhibition rather than a grid. */
+.wall--split .wall-art::after,
+.wall--split-r .wall-art::after{content:"";display:block;padding-top:calc(100% / var(--ar,1.4))}
+.wall-art img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:var(--op,50% 50%);
+  transform-origin:var(--to,var(--op,50% 50%));
+  transform:scale(var(--z,1)) translateY(calc(var(--wp,.5) * -18px));
+  will-change:transform;transition:transform .9s var(--ease-slow);
 }
-@media(max-width:760px){.portals{grid-template-columns:1fr}}
-@media(min-width:761px){
-  .portal:nth-child(2),.portal:nth-child(4){transform:translateY(clamp(20px,3vw,44px))}
-}
-.portal{position:relative;transition:opacity .45s var(--ease),transform .45s var(--ease)}
-/* neighbors recede when one is engaged */
 @media(hover:hover) and (pointer:fine){
-  .portals:has(.portal:hover) .portal:not(:hover){opacity:.5}
+  .wall:hover .wall-art img{transform:scale(calc(var(--z,1) + .025)) translateY(calc(var(--wp,.5) * -18px))}
 }
-.po-inner{
-  position:relative;background:var(--paper-2);border:1px solid var(--line);
-  aspect-ratio:4/3.1;display:flex;flex-direction:column;justify-content:space-between;
-  padding:clamp(20px,2.6vw,30px);overflow:hidden;
-  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
-  transition:transform .5s var(--ease),border-color .35s var(--ease),box-shadow .5s var(--ease);
+.wall-copy{
+  position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(38px,5vw,84px) var(--gutter);
 }
-@media(max-width:560px){.po-inner{aspect-ratio:4/3.6}}
-@media(hover:hover) and (pointer:fine){
-  .portal:hover .po-inner{
-    transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0) scale(1.018);
-    border-color:var(--line-2);
-    box-shadow:0 24px 60px -30px var(--shadow);
+.wall-idx{font-family:var(--mono);font-size:11px;letter-spacing:0.24em;text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.wall-idx::before{content:"";width:9px;height:9px;background:var(--accent);flex:none;transition:transform .35s var(--ease)}
+.wall:hover .wall-idx::before{transform:rotate(45deg)}
+/* the project numeral — the same architectural device as the chapter numerals,
+   applied inside the exhibition so each wall reads as its own composition */
+.wall-no{
+  display:block;font-family:var(--arch);font-weight:500;
+  font-size:clamp(52px,7vw,112px);line-height:.8;letter-spacing:-0.04em;
+  margin:clamp(18px,2.4vw,32px) 0 clamp(14px,1.8vw,24px);opacity:.9;
+}
+.wall h3{font-size:clamp(28px,3.7vw,54px);letter-spacing:-0.022em;line-height:1.02;max-width:15ch}
+.wall-kind{margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;display:flex;flex-wrap:wrap;gap:8px 20px}
+.wall-sit{margin-top:clamp(18px,2.2vw,28px);font-size:15.5px;line-height:1.55;max-width:42ch}
+.wall-acts{margin-top:clamp(24px,3vw,38px);display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+/* a real button, not an invisible hit layer over a picture: the control that
+   opens a case study is now something a keyboard and a screen reader can see */
+.wall-open{
+  background:none;border:1px solid currentColor;cursor:pointer;color:inherit;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  padding:12px 22px;display:inline-flex;align-items:center;gap:10px;
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.wall-open .arr{transition:transform .25s var(--ease)}
+.wall-open:hover .arr{transform:translateX(4px)}
+/* the underline sits under the text, but the target is the whole padded box —
+   22px of link on a phone is a miss waiting to happen */
+.wall-live{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+  padding:9px 0;position:relative;transition:color .25s var(--ease);
+}
+.wall-live::after{
+  content:"";position:absolute;left:0;right:0;bottom:6px;height:1px;
+  background:currentColor;opacity:0;transition:opacity .25s var(--ease);
+}
+.wall-live:hover::after{opacity:1}
+.wall-live .ext{font-size:12px;line-height:1;transition:transform .25s var(--ease)}
+.wall-live:hover .ext{transform:translate(2px,-2px)}
+/* provenance — Helio is an AMRI product, not a client engagement.
+   Stated plainly in the mono register, at the size of a fact, not an apology. */
+.wall-note{
+  display:inline-block;align-self:flex-start;margin-top:20px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  border:1px solid currentColor;padding:6px 12px;
+}
+
+/* --- tonal environments. Dark walls are dark in BOTH themes; light walls
+       follow the theme's raised surface, so the contrast BETWEEN walls
+       survives day and night. --- */
+.wall--dark{background:var(--band);color:var(--band-fg)}
+.wall--dark .wall-idx{color:var(--muted-inv)}
+.wall--dark .wall-kind{color:var(--muted-inv-2)}
+.wall--dark .wall-sit{color:var(--muted-inv)}
+.wall--dark .wall-no{color:var(--band-fg)}
+.wall--dark .wall-open:hover{background:var(--c-ivory);color:var(--c-ink)}
+.wall--dark .wall-note{color:var(--muted-inv)}
+.wall--dark .wall-idx::before{background:var(--red-soft)}
+.wall--light{background:var(--paper-2);color:var(--ink)}
+.wall--light .wall-idx{color:var(--muted)}
+.wall--light .wall-kind{color:var(--muted-2)}
+.wall--light .wall-sit{color:var(--muted)}
+.wall--light .wall-open:hover{background:var(--ink);color:var(--paper)}
+.wall--light .wall-note{color:var(--muted)}
+
+/* layout A — copy left / art right.
+   --cols is per project: the art column is widened or narrowed so the image's
+   authored height lands close to the height its copy column needs. Get that
+   wrong and the grid row is taller than the picture, the picture stretches to
+   fill it, and object-fit:cover quietly slices the sides off a composition
+   that was framed deliberately. A wide, shallow image (Linework) therefore
+   gets a wider column than a near-square one (Trademark). */
+.wall--split .wall-in{grid-template-columns:var(--cols,minmax(0,0.92fr) minmax(0,1.08fr))}
+/* layout B — art left / copy right */
+.wall--split-r .wall-in{grid-template-columns:var(--cols,minmax(0,1.08fr) minmax(0,0.92fr))}
+.wall--split-r .wall-art{order:1}
+.wall--split-r .wall-copy{order:2}
+/* layout C — full bleed, copy set low-left. the crescendo.
+   A 960px screenshot stretched across a 1440px full-bleed frame has almost no
+   crop slack: cropping past the client's own headline would mean zooming ~2.7x
+   and turning the best image on the page to mush. So this wall uses
+   production's proven logic instead of brute force — PAD THE TYPE, DO NOT
+   BLANKET THE WORK. AMRI's copy is placed exactly where the client's headline,
+   buttons and caption live (the lower left of every one of these sites), and
+   one directional gradient covers that corner. The house, the roofline and the
+   grounds — the right two-thirds — stay completely clean and full size. */
+.wall--bleed .wall-in{grid-template-columns:1fr;min-height:var(--wall-h,92vh)}
+.wall--bleed .wall-art{position:absolute;inset:0}
+.wall--bleed .wall-copy{
+  justify-content:flex-end;align-items:flex-start;
+  padding-bottom:clamp(44px,6vw,92px);max-width:1520px;margin:0 auto;width:100%;
+}
+.wall--bleed .wall-copy::before{
+  content:"";position:absolute;inset:-45% -20% 0 -30%;z-index:-1;pointer-events:none;
+  background:linear-gradient(34deg,rgba(9,9,11,.96) 0%,rgba(9,9,11,.90) 24%,rgba(9,9,11,.62) 44%,rgba(9,9,11,.24) 64%,rgba(9,9,11,0) 84%);
+}
+.wall--bleed h3{max-width:16ch}
+.wall--bleed .wall-sit{max-width:38ch}
+/* No scrim over the work on split walls. The heavy directional gradients that
+   used to sit here existed to bury a client headline that the old crops could
+   not avoid; the new captures have no client headline in them, so a scrim
+   would now be doing nothing but damaging the evidence. A hairline is all the
+   separation the two columns need. */
+.wall--split .wall-art{border-left:1px solid var(--line)}
+.wall--split-r .wall-art{border-right:1px solid var(--line)}
+.wall--dark .wall-art{border-color:var(--line-inv)}
+
+/* Mobile: the wall is redesigned, not shrunk. Art on top at a height where the
+   project is still recognisable, copy beneath it at full width — so client
+   typography and AMRI typography never share a surface, and no wall depends on
+   hover to be usable. */
+/* Stacking starts at 1100px, not 900px. Between those widths the copy column
+   still needs its full height while the art column has narrowed, so the grid
+   row grows taller than the picture's authored ratio and object-fit:cover
+   starts slicing the sides off — at 1024 the Linework packets lost a card edge
+   on each side. Above 1100 every wall's natural height clears its copy. */
+@media(max-width:1100px){
+  .wall--split .wall-in,.wall--split-r .wall-in{grid-template-columns:1fr;min-height:0}
+  .wall--split .wall-art,.wall--split-r .wall-art{order:1;position:relative}
+  /* Tablet keeps the whole authored composition — at 768-1100px the art runs
+     the full width, so the entire grid / catalogue / interface is still
+     legible and nothing needs cropping. */
+  .wall--split .wall-copy,.wall--split-r .wall-copy{order:2;padding-top:clamp(30px,6vw,44px);padding-bottom:clamp(36px,7vw,52px)}
+  .wall--split .wall-art::before,.wall--split-r .wall-art::before{display:none}
+  .wall--bleed .wall-in{min-height:clamp(430px,86vh,620px)}
+  .wall--bleed .wall-copy::before{inset:-60% -20% 0 -20%;background:linear-gradient(12deg,rgba(9,9,11,.96) 0%,rgba(9,9,11,.88) 34%,rgba(9,9,11,.52) 58%,rgba(9,9,11,0) 88%)}
+  .wall-no{font-size:clamp(46px,13vw,72px)}
+}
+/* Phones only. A six-card project grid or a four-packet catalogue rendered
+   390px wide is a texture, not evidence — so below 760px each wall keeps a
+   frame of its own (--arm) and zooms into ONE legible piece of the same
+   capture: a single project card, a single design packet, a single interface
+   card. The bleed wall keeps its photograph and only re-anchors. */
+@media(max-width:760px){
+  .wall--split .wall-art::after,.wall--split-r .wall-art::after{padding-top:calc(100% / var(--arm,var(--ar,1.4)))}
+  .wall-art img{
+    object-position:var(--opm,var(--op,50% 50%));
+    transform-origin:var(--tom,var(--opm,var(--op,50% 50%)));
+    transform:scale(var(--zm,1)) translateY(calc(var(--wp,.5) * -10px));
   }
 }
-/* real project imagery — the portfolio finally shows the work.
-   Each portal carries an approved screenshot of the live project,
-   under a tonal scrim that keeps the AMRI register legible. */
-.po-art{position:absolute;inset:0;pointer-events:none;transition:transform .8s var(--ease-slow)}
-.po-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left top}
-@media(hover:hover) and (pointer:fine){.portal:hover .po-art{transform:scale(1.03)}}
-.po-art::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,
-    rgba(var(--scrim),.96) 0%,
-    rgba(var(--scrim),.82) 13%,
-    rgba(var(--scrim),.08) 32%,
-    rgba(var(--scrim),.1) 50%,
-    rgba(var(--scrim),.88) 66%,
-    rgba(var(--scrim),.97) 100%);
+.exh-foot{
+  padding:clamp(30px,4vw,52px) 0;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;letter-spacing:0.17em;text-transform:uppercase;color:var(--muted-2);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
 }
-.po-top{position:relative;display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-2)}
-.po-top .st{color:var(--red)}
-.po-label{position:relative}
-.po-label h3{
-  font-size:clamp(24px,3.2vw,38px);letter-spacing:0.02em;line-height:1.04;
-  text-transform:uppercase;max-width:11ch;
-}
-.po-cta{
-  position:relative;margin-top:14px;display:inline-flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);
-  opacity:0;transform:translateY(6px);transition:opacity .35s var(--ease),transform .35s var(--ease);
-}
-.po-cta .arr{transition:transform .3s var(--ease)}
-@media(hover:hover) and (pointer:fine){
-  .portal:hover .po-cta{opacity:1;transform:none}
-  .portal:hover .po-cta .arr{transform:translateX(4px)}
-}
-/* touch: no hover — the invitation is always present */
-@media(hover:none),(max-width:760px){.po-cta{opacity:1;transform:none}}
-.po-hit{position:absolute;inset:0;z-index:2;background:none;border:0;cursor:pointer}
-.portal:has(.po-hit:focus-visible) .po-inner{border-color:var(--accent)}
-.portal:has(.po-hit:focus-visible) .po-cta{opacity:1;transform:none}
-.work-foot{margin-top:clamp(36px,5vw,64px);font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-2)}
 
 /* ---------- case-study overlays ---------- */
 dialog.cs{
@@ -627,7 +871,11 @@ dialog.cs[open]{animation:cs-in .45s var(--ease-slow)}
 .cs-close:hover{border-color:var(--ink)}
 dialog.cs h3{font-size:clamp(28px,4.4vw,48px);letter-spacing:-0.01em;max-width:16ch}
 .cs-meta{display:flex;gap:10px 22px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-2)}
-.cs-meta .live{color:var(--red)}
+.cs-meta .live{color:var(--accent)} /* was raw --red, which is unreadable on the dark theme */
+/* provenance flag — currently only Helio, which is an AMRI product rather
+   than a client engagement. Marked in the metadata line where a reader is
+   already looking for what kind of project this is. */
+.cs-meta .flagged{color:var(--accent);border:1px solid var(--line-2);padding:4px 10px;margin:-4px 0}
 /* the upper live link — for the visitor who only wants to inspect the real site.
    Deliberately quieter than the bottom CTA: same destination, less weight. */
 .cs-quick{
@@ -688,42 +936,61 @@ dialog.cs h3{font-size:clamp(28px,4.4vw,48px);letter-spacing:-0.01em;max-width:1
 /* ============================================================
    05 · WHAT WE HANDLE (dark) — four disciplines, one system
    ============================================================ */
-.caps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-inv);border:1px solid var(--line-inv)}
-@media(max-width:960px){.caps{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.caps{grid-template-columns:1fr}}
-.cap{background:var(--band);padding:clamp(24px,3vw,38px);position:relative;transition:background .4s var(--ease)}
-.cap::before{content:"";position:absolute;top:0;left:0;right:100%;height:1px;background:var(--red);transition:right .5s var(--ease)}
+/* Four thin columns read as a spec table. Two columns at scale let each
+   discipline carry its name in the display face — the section stays the
+   densest chapter on the page, but density is now a texture rather than a
+   squeeze. Content is unchanged: a prospect still sees exactly what AMRI
+   handles. */
+.caps{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-inv);border:1px solid var(--line-inv)}
+@media(max-width:720px){.caps{grid-template-columns:1fr}}
+.cap{background:var(--band);padding:clamp(26px,3.4vw,52px);position:relative;transition:background .4s var(--ease)}
+.cap::before{content:"";position:absolute;top:0;left:0;right:100%;height:1px;background:var(--red-soft);transition:right .55s var(--ease)}
 @media(hover:hover) and (pointer:fine){
   .cap:hover{background:var(--band-2)}
   .cap:hover::before{right:0}
 }
-.cap .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:22px;color:var(--muted-inv)}
-.cap .eyebrow::before{content:"";width:8px;height:8px;background:var(--red);flex:none;transition:transform .3s var(--ease)}
-.cap:hover .eyebrow::before{transform:rotate(45deg)}
-.cap ul{list-style:none}
-.cap li{font-size:14.5px;line-height:1.45;color:var(--muted-inv);padding:9px 0;border-bottom:1px solid var(--line-inv);transition:color .3s var(--ease)}
+.cap-idx{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--muted-inv-2);display:flex;align-items:center;gap:12px;
+}
+.cap-idx::before{content:"";width:8px;height:8px;background:var(--red-soft);flex:none;transition:transform .3s var(--ease)}
+.cap:hover .cap-idx::before{transform:rotate(45deg)}
+.cap h3{font-size:clamp(28px,3.6vw,50px);letter-spacing:-0.02em;margin:clamp(18px,2.2vw,28px) 0 clamp(18px,2.2vw,28px)}
+.cap ul{list-style:none;border-top:1px solid var(--line-inv)}
+.cap li{font-size:15px;line-height:1.45;color:var(--muted-inv);padding:11px 0;border-bottom:1px solid var(--line-inv);transition:color .3s var(--ease)}
 .cap li:last-child{border-bottom:0}
 .cap:hover li{color:var(--band-fg)}
-.caps-note{margin-top:26px;font-size:14.5px;color:var(--muted-inv);max-width:66ch}
+.caps-note{margin-top:30px;font-size:15px;color:var(--muted-inv);max-width:66ch}
 
 /* ============================================================
    06 · HOW WE WORK — one line moves from uncertainty to clarity
    A track runs above the six steps; as the visitor moves through
    the section, the line advances and each step comes online.
    ============================================================ */
-.method-track{position:relative;height:2px;background:var(--line);margin-bottom:0}
+/* This is a PRINCIPLE, not a services block, so it gets the widest, most
+   procedural composition on the page: a thin oxblood progression rule that
+   fills as the visitor moves through it, then six open columns with real air
+   between them. The boxed 1px-gap table that used to sit here made the method
+   look like a pricing grid — the one thing this section exists to deny. */
+.method-track{position:relative;height:1px;background:var(--line);margin-bottom:clamp(32px,4.4vw,56px)}
 .method-track .mt-fill{position:absolute;left:0;top:0;bottom:0;width:calc(var(--gp,0)*100%);background:var(--accent)}
-.method{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-top:0}
-@media(max-width:1020px){.method{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:620px){.method{grid-template-columns:1fr}}
-.step{background:var(--paper);padding:clamp(22px,2.6vw,32px);position:relative}
-.step .num{display:block;margin-bottom:44px;transition:color .4s var(--ease)}
-.step h3{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px;color:var(--muted-2);transition:color .4s var(--ease)}
-.step p{font-size:13.5px;line-height:1.5;color:var(--muted);opacity:.55;transition:opacity .4s var(--ease)}
+.method{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(16px,2vw,32px)}
+/* Six columns stop reading long before they stop fitting. Three, then two —
+   never one tall stack of six, and never an accordion: the progression is the
+   argument and it has to stay visible as a sequence. */
+@media(max-width:1020px){.method{grid-template-columns:repeat(3,1fr);row-gap:clamp(30px,4vw,44px)}}
+@media(max-width:620px){.method{grid-template-columns:repeat(2,1fr);row-gap:30px;column-gap:22px}}
+.step{position:relative}
+.step .num{display:block;transition:color .4s var(--ease)}
+.step h3{
+  font-family:var(--arch);font-size:clamp(19px,1.9vw,26px);font-weight:500;letter-spacing:-0.012em;
+  text-transform:none;margin:14px 0 12px;color:var(--muted-2);transition:color .5s var(--ease);
+}
+.step p{font-size:14.5px;line-height:1.5;color:var(--muted);opacity:.45;transition:opacity .5s var(--ease)}
 .step.on .num{color:var(--accent)}
 .step.on h3{color:var(--ink)}
 .step.on p{opacity:1}
-.method-note{margin-top:26px;max-width:64ch;color:var(--muted);font-size:15px}
+.method-note{margin-top:clamp(36px,4.8vw,62px);max-width:72ch;color:var(--muted);font-size:15px}
 
 /* ============================================================
    07 · THE SYSTEM (dark) — the loose-ends experience
@@ -734,23 +1001,60 @@ dialog.cs h3{font-size:clamp(28px,4.4vw,48px);letter-spacing:-0.01em;max-width:1
    ============================================================ */
 .sys-sec{background:var(--band);color:var(--band-fg);border-top:1px solid var(--band);padding:0}
 .sys-tall{position:relative;height:192vh}
-@media(max-width:760px){.sys-tall{height:178vh}}
+/* Mobile duration, measured at 390x844 rather than inherited from an old audit.
+   Scroll available to each beat of the sequence:
+
+     178vh (was)  658px  align 329 · organise 111 · CLOSING REVEAL 218
+     160vh (now)  506px  align 253 · organise  85 · CLOSING REVEAL 168
+     145vh        380px  align 190 · organise  64 · CLOSING REVEAL 126
+
+   145vh was tested and rejected: at 300px of scroll — one ordinary flick — the
+   sequence is already at sp 0.91 with the closing statement at 59% opacity, so
+   the payoff line arrives mid-gesture and is easily thrown past. 160vh keeps
+   all four beats (scattered, resolving, organised, closing) legible while
+   cutting 152px, ~23%, off the scroll burden. Desktop stays at 192vh: no
+   defect there, so it is not touched. */
+@media(max-width:760px){.sys-tall{height:160vh}}
 .sys-stage{
   position:sticky;top:0;height:100vh;height:100dvh;
   display:flex;flex-direction:column;justify-content:center;
-  overflow:hidden;padding-top:60px; /* clears the sticky masthead */
+  overflow:hidden;padding-top:64px; /* clears the sticky masthead */
 }
 .sys-stage>.wrap{width:100%} /* column-flex + auto margins would otherwise shrink-wrap */
 .sys-head{padding-top:12px}
-.sys-head .num{display:block;margin-bottom:14px}
+/* The System stage is a sticky 100dvh frame — vertical space here is the
+   scarcest on the site, so this chapter mark stays on one baseline instead of
+   stacking. It is still unmistakably the same device as the other chapters. */
+.sys-head .ch-mark{display:flex;align-items:baseline;gap:16px;margin-bottom:14px}
+.sys-head .ch-no{font-size:clamp(34px,4.4vw,60px);color:var(--muted-inv)}
+.sys-head .ch-label{margin-top:0;padding-top:0;border-top:0;color:var(--muted-inv-2)}
 .sys-head p{font-family:var(--mono);font-size:11.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-inv)}
-.sys-field{position:relative;flex:0 0 auto;height:min(46vh,420px);margin:clamp(20px,4vh,40px) 0}
+/* The field is the one part of the stage that can give. Fixed at
+   min(46vh,420px) it forced head + field + closing message past the bottom of
+   the 100dvh frame — at 1440x900 the closing paragraph was cut by 12px, at
+   390x844 by 23px, in the finished state, on overflow:hidden. Making the field
+   the flexible element lets it absorb whatever is left over at any height
+   instead of pushing text out of the frame. min-height keeps the seven
+   fragment rows from stacking on top of each other. */
+/* The flex children of .sys-stage are the three .wrap divs, so the field's
+   wrapper is what has to be flexible — sizing .sys-field alone did nothing. */
+.sys-stage>.sys-wrap-f{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;margin:clamp(16px,3vh,36px) 0}
+.sys-field{position:relative;flex:1 1 auto;min-height:236px;max-height:420px}
 .frag{
   position:absolute;left:0;top:calc(var(--row) * (100% / 7));width:100%;
   display:grid;grid-template-columns:26px 1fr auto;gap:14px;align-items:baseline;
   padding:10px 0;border-bottom:1px solid var(--line-inv);
   font-family:var(--mono);font-size:clamp(10.5px,1.5vw,13px);letter-spacing:0.12em;color:var(--muted-inv);
-  transform:translate(calc(var(--sx) * (1 - var(--sp,0))),calc(var(--sy) * (1 - var(--sp,0)))) rotate(calc(var(--sr) * (1 - var(--sp,0))));
+  /* --sxf bounds the horizontal scatter to the page gutter.
+     The authored displacements run to 13vw, but a .frag spans the full content
+     column, so anything wider than the gutter pushed text past the stage's
+     overflow:hidden edge and sliced it mid-word — "Somewhere else entir|",
+     "Nobody is sur|". Disorder is the argument here; a chopped word is just a
+     bug. The gutter is clamp(20px,5vw,72px) and the column is centred, so the
+     available slack is never less than 5vw: 13vw x .38 = 4.94vw clears at
+     every width. Vertical offset and rotation are untouched — they cannot
+     clip, because the field has room above and below. */
+  transform:translate(calc(var(--sx) * var(--sxf,.38) * (1 - var(--sp,0))),calc(var(--sy) * (1 - var(--sp,0)))) rotate(calc(var(--sr) * (1 - var(--sp,0))));
   opacity:calc(.55 + .45 * var(--sp,0));
   will-change:transform;
 }
@@ -758,21 +1062,113 @@ dialog.cs h3{font-size:clamp(28px,4.4vw,48px);letter-spacing:-0.01em;max-width:1
 .frag .fv{color:var(--muted-inv-2);text-align:right;letter-spacing:0.08em}
 .frag .fk{text-transform:uppercase;letter-spacing:0.16em;color:var(--band-fg)}
 .sys-close{opacity:calc((var(--sp,0) - .78) / .22);transform:translateY(calc((1 - var(--sp,0)) * 30px));padding-bottom:24px}
-.sys-close h2{font-size:clamp(30px,5.4vw,62px);max-width:14ch;letter-spacing:-0.015em}
+/* 14ch broke this straight through the couplet under Clash ("One business. It /
+   should feel like one / system."). Widened so the second statement holds one
+   line on desktop; the .hln blocks keep the two statements apart at every
+   width regardless. */
+.sys-close h2{font-size:clamp(30px,5.4vw,62px);max-width:19ch;letter-spacing:-0.015em}
 .sys-close h2 em{font-style:normal;color:var(--muted-inv)}
 .sys-close p{margin-top:18px;color:var(--muted-inv);font-size:15.5px;line-height:1.6;max-width:56ch}
 .sys-close p b{color:var(--band-fg);font-weight:600}
 .sys-close .dotr{display:inline-block;width:8px;height:8px;background:var(--red);margin-left:10px;vertical-align:baseline}
+/* ---- stage fit · no System text may clip ----
+   The stage is a sticky 100dvh frame with overflow:hidden, so its contents
+   have to fit the SHORTEST viewport it will ever appear in, not the tallest.
+   They did not: at 390x844 the closing paragraph ran 23px past the bottom of
+   the stage and was silently cut, and short laptops cut deeper. The fragments
+   are allowed to be disorderly — that is the argument — but no sentence may be
+   chopped. Sizing keys off viewport HEIGHT, which is the axis that constrains
+   this section, rather than width, which is what it used to guess from. */
+/* Below these heights the field alone cannot absorb enough — the closing
+   message itself has to come down in scale, or it is the thing that gets cut. */
+@media(max-height:820px){
+  .sys-close h2{font-size:clamp(26px,4.4vw,44px)}
+  .sys-close p{margin-top:14px;font-size:14.5px}
+}
+@media(max-height:680px){
+  .sys-field{min-height:200px;margin:12px 0}
+  .sys-close h2{font-size:clamp(24px,4vw,34px)}
+  .sys-close p{font-size:13.5px;line-height:1.5;margin-top:12px}
+  .sys-head p{font-size:10.5px}
+}
 
 /* ============================================================
    08 · OWNERSHIP — spacious, after the storm
    ============================================================ */
-.own-band{background:var(--paper-2);padding:clamp(90px,13vw,170px) 0}
-.own-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:center}
-@media(max-width:760px){.own-grid{grid-template-columns:1fr}}
-.own-grid h2{font-size:clamp(28px,4vw,44px);max-width:14ch}
-.own-grid h2 .r{color:var(--accent)}
-.own-grid p{color:var(--muted);font-size:16px}
+/* ============================================================
+   OWNERSHIP — THE OXBLOOD FIELD  (V2.4 default)
+   The page spends its one saturated moment on the sentence a competitor finds
+   hardest to copy. Everything before and after stays ivory and ink, so this
+   reads as a decision rather than as a palette. Existing oxblood family and
+   existing ivory only: no gradients beyond a single directional lift, no new
+   colours, no new devices. The whole section is a poster.
+   ============================================================ */
+#ownership{--sec-y:clamp(110px,16vw,220px)}
+.own-band{position:relative;overflow:clip;border-top:0;transition:background .4s var(--ease),color .4s var(--ease)}
+/* Every token is re-pointed at the field, so the chapter device, the hairlines
+   and the body copy all measure against oxblood rather than against paper.
+   Scoped with :not() rather than overridden later — a custom property cannot be
+   "reset to the root value" (`initial` blanks it), so the restrained variant
+   must simply never receive these in the first place. */
+.own-band:not([data-own="a"]){
+  background:var(--field);color:var(--field-fg);
+  --ink:var(--field-fg);
+  --muted:var(--field-muted);
+  --muted-2:var(--field-muted-2);
+  --line:var(--field-line);
+  --line-2:var(--field-line-2);
+  --accent:var(--field-fg);   /* the oxblood period cannot sit on oxblood */
+}
+.own-band:not([data-own="a"])::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 76% 120% at 78% 0%,rgba(255,246,232,.10),transparent 62%);
+}
+.own-band .wrap{position:relative;z-index:1}
+.own-band ::selection{background:var(--field-fg);color:var(--field)}
+/* the wordmark integrated into the field rather than stamped over it */
+.own-ghost{
+  position:absolute;right:calc(-1 * var(--gutter));bottom:-.16em;z-index:0;
+  font-family:var(--arch);font-weight:500;letter-spacing:0.06em;line-height:.8;
+  font-size:clamp(160px,30vw,470px);color:var(--field-fg);opacity:.07;
+  pointer-events:none;user-select:none;white-space:nowrap;
+}
+/* The chapter device stays the chapter device — but a 120px numeral beside a
+   124px statement is two headlines arguing. Here it drops to a rail on a
+   hairline: still architectural, no longer competing. */
+.own-band .ch-mark{
+  display:flex;align-items:baseline;gap:18px;width:auto;padding-top:0;
+  padding-bottom:22px;border-bottom:1px solid var(--field-line);
+  margin-bottom:clamp(40px,6vw,72px);
+}
+.own-band .ch-no{font-size:clamp(38px,4.4vw,68px);color:var(--field-fg)}
+.own-band .ch-label{margin-top:0;padding-top:0;border-top:0;max-width:none;color:var(--field-muted)}
+/* Three possessions, one per line, locked in markup. No max-width: a ch-based
+   cap is the exact mechanism that once broke this couplet, and at every tested
+   width the longest line ("Your accounts.") clears the column with room. */
+.own-band h2{font-size:clamp(36px,8.4vw,124px);line-height:0.88;letter-spacing:-0.036em}
+.own-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.78fr);gap:clamp(30px,5vw,80px);align-items:end;margin-top:clamp(34px,5vw,64px)}
+@media(max-width:880px){.own-grid{grid-template-columns:1fr;gap:26px}}
+.own-grid p{color:var(--field-muted);font-size:16.5px;line-height:1.62;max-width:46ch}
+.own-grid p b{color:var(--field-fg);font-weight:600}
+
+/* ------------------------------------------------------------------
+   OWNERSHIP · RESTRAINED VARIANT — kept for side-by-side review only.
+   The oxblood field above is the V2.4 direction. This restores the previous
+   paper-2 treatment so the two can be compared on the real page rather than
+   from memory:
+       <section class="own-band" data-own="a">
+   or, from the console:
+       document.querySelector('.own-band').setAttribute('data-own','a')
+   INTERNAL: once the field is signed off, delete this block and the
+   data-own hook with it. Do not ship both.
+   ------------------------------------------------------------------ */
+.own-band[data-own="a"]{background:var(--paper-2);color:var(--ink)}
+.own-band[data-own="a"] .own-ghost{display:none}
+.own-band[data-own="a"] h2{font-size:clamp(32px,5vw,58px);line-height:.98;letter-spacing:-0.022em}
+.own-band[data-own="a"] .ch-mark{border-bottom:0;padding-bottom:0;margin-bottom:clamp(34px,5vw,60px)}
+.own-band[data-own="a"] .ch-no,.own-band[data-own="a"] .ch-label{color:inherit}
+.own-band[data-own="a"] .own-grid{align-items:center}
+.own-band[data-own="a"] .own-grid p{color:var(--muted)}
 
 /* ============================================================
    09 · ABOUT — the manifesto
@@ -786,19 +1182,26 @@ dialog.cs h3{font-size:clamp(28px,4.4vw,48px);letter-spacing:-0.01em;max-width:1
   pointer-events:none;user-select:none;white-space:nowrap;
 }
 .about-sec .wrap{position:relative;z-index:1}
-.about-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(32px,6vw,90px)}
-@media(max-width:860px){.about-grid{grid-template-columns:1fr}}
-.about-grid .lede{max-width:30ch;font-family:var(--arch);font-weight:500;font-size:clamp(22px,3vw,32px);line-height:1.2}
-.about-copy p{color:var(--muted);font-size:15.5px;line-height:1.6}
-.about-copy p+p{margin-top:16px}
+.about-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:clamp(32px,6vw,90px)}
+@media(max-width:880px){.about-grid{grid-template-columns:1fr;gap:34px}}
+/* Left: why the company exists, in plain founder-led prose.
+   Right: the proposition, set large enough to be the thing people quote back.
+   The size step between the two columns is what makes this read as designed
+   rather than as two stacks of paragraphs. */
+.about-grid .pull{
+  max-width:22ch;font-family:var(--arch);font-weight:500;
+  font-size:clamp(24px,3.4vw,42px);line-height:1.16;letter-spacing:-0.022em;
+}
+.about-copy p{color:var(--muted);font-size:16px;line-height:1.62}
+.about-copy p+p{margin-top:17px}
 .about-copy p b{color:var(--ink);font-weight:600}
 .about-band{
-  margin-top:clamp(44px,6vw,72px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin-top:clamp(44px,6vw,76px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:0;
 }
 .about-band span{
   font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-2);
-  padding:16px 22px 16px 0;margin-right:22px;display:inline-flex;align-items:center;gap:12px;
+  padding:17px 22px 17px 0;margin-right:22px;display:inline-flex;align-items:center;gap:12px;
 }
 .about-band span::after{content:"";width:4px;height:4px;background:var(--line-2)}
 .about-band span:last-child::after{display:none}
@@ -825,14 +1228,63 @@ dialog.cs h3{font-size:clamp(28px,4.4vw,48px);letter-spacing:-0.01em;max-width:1
    Field rules draw themselves as the form enters; oxblood marks
    every committed choice; completion is confirmed in place.
    ============================================================ */
-.contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(36px,6vw,96px);align-items:start}
-@media(max-width:900px){.contact-grid{grid-template-columns:1fr}}
-.contact-lede h2{font-size:clamp(34px,5.4vw,64px);max-width:12ch}
-.contact-lede .sub{margin-top:26px;color:var(--muted-inv);font-size:16.5px;line-height:1.6;max-width:38ch}
+/* ---- the closing poster ----
+   The statement used to live inside the narrower of two columns, capped at
+   56px, because that was the only way it fitted. Lifting it out of the grid
+   and giving it the full measure lets it close the page at poster scale — and
+   the two locked statements each hold their own line block, exactly as they
+   did before. The form sits underneath, unchanged, where it converts. */
+.close-head{border-bottom:1px solid var(--line-inv);padding-bottom:clamp(40px,5vw,66px);margin-bottom:clamp(44px,6vw,76px)}
+.close-head .ch-mark{margin-bottom:clamp(26px,3.4vw,44px)}
+.close-head h2{font-size:clamp(32px,7vw,100px);line-height:0.9;letter-spacing:-0.034em;max-width:13ch}
+/* On a phone a 13ch measure at poster scale gives four-word lines and a very
+   tall stack. Below the tablet break the statement takes the full column at a
+   scale that still leads the page but reads in two or three lines. */
+@media(max-width:820px){
+  .close-head h2{max-width:none;font-size:clamp(30px,7.4vw,52px);line-height:0.98}
+  .close-head{padding-bottom:clamp(30px,5vw,44px);margin-bottom:clamp(34px,5vw,48px)}
+}
+.contact-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(36px,6vw,100px);align-items:start}
+@media(max-width:960px){.contact-grid{grid-template-columns:1fr;gap:48px}}
+.contact-lede .sub{color:var(--muted-inv);font-size:17px;line-height:1.6;max-width:38ch}
 .contact-lede .micro{
-  margin-top:40px;font-family:var(--mono);font-size:11.5px;letter-spacing:0.12em;
+  margin-top:22px;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
   color:var(--muted-inv-2);line-height:2;text-transform:uppercase;
 }
+/* "What happens next" — the contact column had unused vertical space and the
+   form asks a lot of questions before anyone has been told what follows.
+   This states the actual process and nothing more. There is deliberately no
+   response-time promise here: no such standard has been confirmed, and an
+   invented one is a promise the business would have to keep. */
+.next{margin-top:clamp(38px,5vw,56px);border-top:1px solid var(--line-inv);padding-top:26px}
+.next h3{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--muted-inv-2);font-weight:500;margin-bottom:14px;
+}
+.next ol{list-style:none;counter-reset:nx}
+.next li{
+  display:grid;grid-template-columns:32px minmax(0,1fr);gap:14px;align-items:baseline;
+  padding:13px 0;border-bottom:1px solid var(--line-inv);
+}
+.next li:last-child{border-bottom:0}
+.next li::before{
+  counter-increment:nx;content:"0" counter(nx);
+  font-family:var(--mono);font-size:11px;letter-spacing:0.16em;color:var(--muted-inv-2);
+}
+.next li span{font-size:14.5px;line-height:1.5;color:var(--muted-inv)}
+/* the direct route, for people who would simply rather write an email.
+   Promoted out of the mono footnote register into the display face: for a
+   consultation-led business this is a primary route, not a fallback. */
+.direct{margin-top:clamp(30px,4vw,46px)}
+.direct .eyebrow{display:block;color:var(--muted-inv-2);margin-bottom:14px}
+.direct a{
+  display:inline-block;font-family:var(--arch);font-weight:500;
+  font-size:clamp(19px,2.2vw,27px);letter-spacing:-0.015em;color:var(--band-fg);
+  text-decoration:none;border-bottom:1px solid var(--line-inv-2);padding-bottom:5px;
+  transition:border-color .25s var(--ease),color .25s var(--ease);
+}
+.direct a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
 form.consult{display:flex;flex-direction:column;gap:26px}
 .f-row{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 @media(max-width:620px){.f-row{grid-template-columns:1fr}}
@@ -891,8 +1343,8 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 .foot-brand .ft{margin-top:22px;font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-inv-2);line-height:2}
 .foot-col h4{font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted-inv-2);font-weight:500;margin-bottom:18px}
 .foot-col ul{list-style:none}
-.foot-col li{padding:6px 0}
-.foot-col a{color:var(--muted-inv);text-decoration:none;font-size:14.5px;transition:color .25s var(--ease)}
+.foot-col li{padding:2px 0}
+.foot-col a{display:inline-block;padding:6px 0;color:var(--muted-inv);text-decoration:none;font-size:14.5px;transition:color .25s var(--ease)}
 .foot-col a:hover{color:var(--band-fg)}
 .foot-base{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-top:28px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted-inv-2)}
 
@@ -901,11 +1353,11 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
    ============================================================ */
 @media(prefers-reduced-motion:reduce){
   .hero::before,.hero.go::before{animation:none}
-  .scroll-cue .sc-l::after{animation:none;top:0;background:var(--line-2)}
   .reveal{opacity:1;transform:none}
   .awi{transform:none!important}
-  .hero-rule{transform:scaleX(1)!important}
   .hero-fade{opacity:1;transform:none}
+  .hero-rule{transform:scaleX(1)!important}
+  .wall-art img{transform:scale(var(--z,1.14))!important}
   .ledger:not(.set) .ledger-row{opacity:1;transform:none}
   .frag{transform:none!important;opacity:1!important}
   .sys-close{opacity:1!important;transform:none!important}
@@ -939,13 +1391,19 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 
 <!-- ================= HEADER ================= -->
 <header class="masthead">
-  <div class="wrap">
+  <div class="wrap-wide">
     <a class="brand" href="#top" aria-label="AMRI Group — home">
       <span class="bw">AMRI&nbsp;GROUP</span>
     </a>
     <nav class="primary" aria-label="Primary">
+      <!-- "What We Do" reaches the capabilities section (Brand / Web / Presence /
+           Growth), which is what the label actually describes. It previously
+           pointed at the Launch / Rebuild / Grow section, so the label and the
+           destination disagreed. The situations section is reached by reading
+           the page rather than by a sixth nav item — a nav this size is better
+           short and accurate than complete. -->
       <a class="nl" href="#work">Work</a>
-      <a class="nl" href="#what-we-do">What We Do</a>
+      <a class="nl" href="#capabilities">What We Do</a>
       <a class="nl" href="#how-we-work">How We Work</a>
       <a class="nl" href="#about">About</a>
       <a class="nl" href="#contact">Contact</a>
@@ -979,7 +1437,7 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
   </div>
   <ul>
     <li><a href="#work"><span class="k">01</span>Work</a></li>
-    <li><a href="#what-we-do"><span class="k">02</span>What We Do</a></li>
+    <li><a href="#capabilities"><span class="k">02</span>What We Do</a></li>
     <li><a href="#how-we-work"><span class="k">03</span>How We Work</a></li>
     <li><a href="#about"><span class="k">04</span>About</a></li>
     <li><a href="#contact"><span class="k">05</span>Start a project</a></li>
@@ -1006,37 +1464,48 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 </div>
 
 <main id="main">
-<!-- ================= 01 · HERO ================= -->
+<!-- ================= 01 · HERO =================
+     Typography-led, and monumental because of that rather than in spite of it.
+     The composition is one sentence broken across the page:
+
+         YOUR BUSINESS GREW.        set large, hard left
+                                    a rule, and a deliberate silence
+              YOUR PRESENCE SHOULD TOO.   set smaller, hard right
+
+     The asymmetry and the distance between the two statements carry the
+     impact. Nothing decorative fills the gap — the portfolio makes its case in
+     Selected Work, where it can be shown at a size that does it justice.
+
+     One <h1> carries the complete sentence to assistive technology; both
+     visible halves are aria-hidden so nothing is announced twice.
+============================================================== -->
 <div class="hero" id="top">
-  <div class="wrap">
-    <div class="hero-meta hero-fade">
+  <div class="wrap-wide">
+    <div class="hero-meta hero-fade f0">
       <span>Atlanta, Georgia</span>
       <span>Brand · Web · Digital Presence</span>
     </div>
-    <h1>
-      <span class="hl1">
+    <h1 class="hero-h1">
+      <span class="sr-only">Your business grew. Your presence should too.</span>
+      <span class="hl1" aria-hidden="true">
         <span class="aw"><span class="awi" data-d="1" style="--ay:105%">Your</span></span>
         <span class="aw"><span class="awi" data-d="1" style="--ay:105%">business</span></span>
         <span class="aw"><span class="awi" data-d="2" style="--ay:105%">grew.</span></span>
       </span>
-      <span class="hl2" aria-label="Your presence should too.">
-        <span class="aw" aria-hidden="true"><span class="awi" data-d="3" style="--ax:-0.6em;--ay:60%;--ar:-1.2deg">Your</span></span>
-        <span class="aw" aria-hidden="true"><span class="awi" data-d="4" style="--ax:0.5em;--ay:118%;--ar:0.8deg">presence</span></span>
-        <span class="aw" aria-hidden="true"><span class="awi" data-d="5" style="--ax:-0.35em;--ay:-70%;--ar:0.6deg">should</span></span>
-        <span class="aw" aria-hidden="true"><span class="awi" data-d="6" style="--ax:0.7em;--ay:95%;--ar:-0.9deg">too.</span></span>
-      </span>
     </h1>
     <div class="hero-rule" aria-hidden="true"></div>
+    <p class="hl2" aria-hidden="true">
+      <span class="aw"><span class="awi" data-d="3" style="--ax:.5em;--ay:100%;--ar:.6deg">Your</span></span>
+      <span class="aw"><span class="awi" data-d="4" style="--ax:-.4em;--ay:100%;--ar:-.5deg">presence</span></span>
+      <span class="aw"><span class="awi" data-d="5" style="--ax:.6em;--ay:100%;--ar:.4deg">should</span></span>
+      <span class="aw"><span class="awi" data-d="6" style="--ax:-.3em;--ay:100%;--ar:-.6deg">too.</span></span>
+    </p>
     <div class="hero-low">
       <p class="lede hero-fade">AMRI Group helps local businesses launch, rebuild and grow — thoughtful branding, modern websites, and the digital systems behind them, handled by one partner.</p>
       <div class="hero-actions hero-fade f2">
         <a class="cta-btn" href="#contact">Start a project</a>
         <a class="ghost-btn" href="#work">View our work</a>
       </div>
-    </div>
-    <div class="scroll-cue hero-fade f2" aria-hidden="true">
-      <span class="sc-t">Scroll</span>
-      <span class="sc-l"></span>
     </div>
   </div>
 </div>
@@ -1045,9 +1514,10 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 <section id="problem" aria-labelledby="problem-h">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">01 / THE GAP</span>
+      <span class="ch-mark"><span class="ch-no">01</span><span class="ch-label">The Gap</span></span>
       <div>
-        <h2 id="problem-h">Your business changed. Your digital presence didn't.</h2>
+        <!-- protected couplet — locked in markup, not left to a ch-width -->
+        <h2 id="problem-h"><span class="hln">Your business changed.</span><span class="hln">Your digital presence didn't.</span></h2>
       </div>
     </div>
     <div class="problem-grid">
@@ -1074,12 +1544,13 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 </section>
 
 <!-- ================= 03 · LAUNCH / REBUILD / GROW ================= -->
-<section id="what-we-do" aria-labelledby="paths-h">
+<section id="situations" aria-labelledby="paths-h">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">02 / THREE SITUATIONS</span>
+      <span class="ch-mark"><span class="ch-no">02</span><span class="ch-label">Situations</span></span>
       <div>
-        <h2 id="paths-h">Wherever the business is, there's a way forward.</h2>
+        <!-- one sentence, no couplet to protect — balance handles it -->
+        <h2 id="paths-h" class="bal">Wherever the business is, there's a way forward.</h2>
         <p class="lede">These aren't packages. They're the three situations we meet most — and how an engagement usually takes shape from each.</p>
       </div>
     </div>
@@ -1131,75 +1602,143 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
   </div>
 </section>
 
-<!-- ================= 04 · SELECTED WORK — the portals ================= -->
-<section id="work" class="work-sec" aria-labelledby="work-h">
-  <div class="work-ghost" aria-hidden="true">AMRI&nbsp;&nbsp;AMRI</div>
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="num">03 / SELECTED WORK</span>
-      <div>
-        <h2 id="work-h">Four kinds of business. One standard.</h2>
-        <p class="lede">Different businesses, different problems, the same standard of care. Step inside — every project here is live on the web.</p>
+<!-- ================= 04 · SELECTED WORK — THE EXHIBITION =================
+     Four walls, not four equal cards. Each project keeps its own proportion,
+     crop, tonal environment and side of the page; the AMRI system — the
+     numbering, the mono register, the hairlines, the oxblood square, the three
+     type families — is the hanging apparatus that holds them together.
+
+     The presentation changed. The case-study system did not: every wall still
+     opens the same production dialog, with the same copy, the same real
+     screenshots, the same live-site CTA, and the same keyboard behaviour.
+
+     INTERNAL: full case-study pages remain planned at
+     /work/trademark-design/ · /work/visionary-construction/ · /work/linework-studio/ · /work/helio/
+     The overlays are structured to convert 1:1 into those pages.
+     No metrics appear anywhere because none are verified. Add ONLY evidenced outcomes later.
+     Imagery = screenshots of the four live production sites, captured Aug 2026.
+     Refresh these assets whenever a project ships a major visual update.
+==================================================================== -->
+<section id="work" class="exh" aria-labelledby="work-h">
+  <div class="exh-head">
+    <div class="work-ghost" aria-hidden="true">AMRI&nbsp;&nbsp;AMRI</div>
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="ch-mark"><span class="ch-no">03</span><span class="ch-label">Selected Work</span></span>
+        <div>
+          <h2 id="work-h"><span class="hln">Four kinds of business.</span><span class="hln">One standard.</span></h2>
+          <p class="lede">Different businesses, different problems, the same standard of care. Every project here is live on the web.</p>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- INTERNAL: full case-study pages remain planned at
-         /work/trademark-design/ · /work/visionary-construction/ · /work/linework-studio/ · /work/helio/
-         The overlays below are structured to convert 1:1 into those pages.
-         No metrics appear anywhere because none are verified. Add ONLY evidenced outcomes later.
-         Imagery = screenshots of the four live production sites, captured Aug 2026.
-         Refresh these assets whenever a project ships a major visual update. -->
-
-    <div class="portals">
-      <article class="portal reveal" data-cs="cs-1">
-        <div class="po-inner">
-          <div class="po-art" aria-hidden="true"><img src="assets/images/trademark/trademark-home.webp" alt="" loading="lazy" decoding="async" width="960" height="549"></div>
-          <div class="po-top"><span>W&#8212;01 &#183; Painting &#183; Georgia</span><span>Brand / Web / Presence</span></div>
-          <div class="po-label">
-            <h3>Established local business</h3>
-            <span class="po-cta">View project <span class="arr">&rarr;</span></span>
-          </div>
+  <!-- W—01 · TRADEMARK — established, local, craft-driven. A near-square
+       editorial block: two full rows of the project grid AMRI built, carrying
+       real finished-work photography and the mono SERVICE / SCOPE / LOCATION
+       register. It shows the craft AND the website in one frame, and there is
+       no client hero headline anywhere in it to fight AMRI's typography. -->
+  <article class="wall wall--dark wall--split" data-wall data-cs="cs-1">
+    <div class="wall-in">
+      <div class="wall-copy">
+        <span class="wall-idx">W&#8212;01 &#183; Painting &#183; Georgia</span>
+        <span class="wall-no" aria-hidden="true">01</span>
+        <h3>Established local business</h3>
+        <div class="wall-kind"><span>Trademark Design Painting &amp; Decorating</span><span>Brand / Web / Presence</span></div>
+        <p class="wall-sit">Twenty-four years of craft was proven. The presence said otherwise.</p>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open aria-haspopup="dialog">Open case study <span class="arr" aria-hidden="true">&rarr;</span></button>
+          <a class="wall-live" href="https://www.trademarkdp.com/" target="_blank" rel="noopener noreferrer">trademarkdp.com <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
         </div>
-        <button class="po-hit" aria-haspopup="dialog" aria-label="View project — established local business, Trademark Design Painting and Decorating"></button>
-      </article>
-
-      <article class="portal reveal d1" data-cs="cs-2">
-        <div class="po-inner">
-          <div class="po-art" aria-hidden="true"><img src="assets/images/visionary/visionary-home.webp" alt="" loading="lazy" decoding="async" width="960" height="549"></div>
-          <div class="po-top"><span>W&#8212;02 &#183; Remodeling &#183; Atlanta</span><span>Web / Portfolio</span></div>
-          <div class="po-label">
-            <h3>Residential construction</h3>
-            <span class="po-cta">View project <span class="arr">&rarr;</span></span>
-          </div>
-        </div>
-        <button class="po-hit" aria-haspopup="dialog" aria-label="View project — residential construction, Visionary Construction"></button>
-      </article>
-
-      <article class="portal reveal d1" data-cs="cs-3">
-        <div class="po-inner">
-          <div class="po-art" aria-hidden="true"><img src="assets/images/linework/linework-home.webp" alt="" loading="lazy" decoding="async" width="960" height="549"></div>
-          <div class="po-top"><span>W&#8212;03 &#183; Design studio</span><span>Web / Editorial</span></div>
-          <div class="po-label">
-            <h3>Design studio</h3>
-            <span class="po-cta">View project <span class="arr">&rarr;</span></span>
-          </div>
-        </div>
-        <button class="po-hit" aria-haspopup="dialog" aria-label="View project — design studio, Linework Studio"></button>
-      </article>
-
-      <article class="portal reveal d2" data-cs="cs-4">
-        <div class="po-inner">
-          <div class="po-art" aria-hidden="true"><img src="assets/images/helio/helio-home.webp" alt="" loading="lazy" decoding="async" width="960" height="549"></div>
-          <div class="po-top"><span>W&#8212;04 &#183; Digital product</span><span>UX / UI / Product</span></div>
-          <div class="po-label">
-            <h3>Digital product</h3>
-            <span class="po-cta">View project <span class="arr">&rarr;</span></span>
-          </div>
-        </div>
-        <button class="po-hit" aria-haspopup="dialog" aria-label="View project — digital product, Helio"></button>
-      </article>
+      </div>
+      <div class="wall-art" style="--ar:1.011;--arm:0.72;--zm:2.16;--opm:0% 7%">
+        <img src="assets/images/trademark/trademark-wall.webp" alt="The project grid on the live Trademark Design site — six completed jobs, each with a photograph of the finished work and its service, scope and location." loading="lazy" decoding="async" width="1248" height="1235">
+      </div>
     </div>
-    <p class="work-foot reveal">Four projects &#183; All live &#183; Links inside each case study</p>
+  </article>
+
+  <!-- W—02 · VISIONARY — the crescendo. This project owns the strongest
+       architectural asset of the four, so it gets the tallest wall, full bleed,
+       and the photograph is allowed to dominate: a wooded slope rebuilt as a
+       paver terrace with granite stair treads, boulder-set retaining walls and
+       landscape lighting at dusk. The band was clipped above the site's own
+       caption card, so there is no client typography in the frame at all —
+       AMRI's copy is the only type on this wall. -->
+  <article class="wall wall--dark wall--bleed" data-wall data-cs="cs-2" style="--wall-h:88vh">
+    <div class="wall-in">
+      <div class="wall-art" style="--op:56% 52%;--opm:70% 44%;--zm:1">
+        <img src="assets/images/visionary/visionary-wall.webp" alt="A completed Visionary Construction project on the live site — a steep rear yard rebuilt as a curved paver terrace with a stone fire pit, granite stair treads climbing the grade, and boulder-set retaining walls lit at dusk." loading="lazy" decoding="async" width="2000" height="745">
+      </div>
+      <div class="wall-copy">
+        <span class="wall-idx">W&#8212;02 &#183; Remodeling &#183; Atlanta</span>
+        <span class="wall-no" aria-hidden="true">02</span>
+        <h3>Residential construction</h3>
+        <div class="wall-kind"><span>Visionary Construction</span><span>Web / Portfolio</span></div>
+        <p class="wall-sit">Finished homes are the strongest sales asset a remodeler has. They needed to be seen the way homeowners actually experience them.</p>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open aria-haspopup="dialog">Open case study <span class="arr" aria-hidden="true">&rarr;</span></button>
+          <a class="wall-live" href="https://visionary-pro.com/" target="_blank" rel="noopener noreferrer">visionary-pro.com <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- W—03 · LINEWORK — daylight, and the widest, shallowest wall of the four.
+       The tone shifts hard against Visionary, which is the point: AMRI moves
+       between industries without carrying one house style into all of them.
+       The frame holds the actual deliverable — four design packets, each shown
+       as floor plan, cabinetry elevation and 3D view. Nothing on that site says
+       "documentation studio" more plainly than this. -->
+  <article class="wall wall--light wall--split-r" data-wall data-cs="cs-3" style="--cols:minmax(0,1.36fr) minmax(0,0.64fr)">
+    <div class="wall-in">
+      <div class="wall-art" style="--ar:1.832;--arm:1.9;--zm:1.9;--opm:0% 0%">
+        <img src="assets/images/linework/linework-wall.webp" alt="The design-packet catalogue on the live Linework Studio site — four packets for kitchens, a closet and a bathroom, each presented as a floor plan, a cabinetry elevation and a 3D view." loading="lazy" decoding="async" width="1643" height="897">
+      </div>
+      <div class="wall-copy">
+        <span class="wall-idx">W&#8212;03 &#183; Design studio</span>
+        <span class="wall-no" aria-hidden="true">03</span>
+        <h3>Design studio</h3>
+        <div class="wall-kind"><span>Linework Studio</span><span>Web / Editorial</span></div>
+        <p class="wall-sit">Drawings made with unusual precision. The shop window had to match them.</p>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open aria-haspopup="dialog">Open case study <span class="arr" aria-hidden="true">&rarr;</span></button>
+          <a class="wall-live" href="https://linework.studio/" target="_blank" rel="noopener noreferrer">linework.studio <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- W—04 · HELIO — product, interface, software. Systematic rather than
+       atmospheric: three real interface surfaces from the live product and the
+       export bar beneath them, framed with margin on every edge. The interface
+       IS the deliverable, so it is shown at a size where it can be read.
+       Provenance is stated as a fact at the size of a fact — building an
+       in-house product is part of the capability story, not a caveat on it. -->
+  <article class="wall wall--light wall--split" data-wall data-cs="cs-4">
+    <div class="wall-in">
+      <div class="wall-copy">
+        <span class="wall-idx">W&#8212;04 &#183; Digital product</span>
+        <span class="wall-no" aria-hidden="true">04</span>
+        <h3>Digital product</h3>
+        <div class="wall-kind"><span>Helio</span><span>UX / UI / Product</span></div>
+        <p class="wall-sit">Product thinking end to end — proof that the same discipline applied to a contractor's website holds up inside software.</p>
+        <span class="wall-note">In-house product &#183; not client work</span>
+        <div class="wall-acts">
+          <button class="wall-open" type="button" data-open aria-haspopup="dialog">Open case study <span class="arr" aria-hidden="true">&rarr;</span></button>
+          <a class="wall-live" href="https://www.gethelioapp.com/" target="_blank" rel="noopener noreferrer">gethelioapp.com <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+      </div>
+      <div class="wall-art" style="--ar:1.399;--arm:1.49;--zm:2.22;--opm:9% 67%">
+        <img src="assets/images/helio/helio-wall.webp" alt="The Helio interface on the live product — an injections and sites record, vial notes with a beyond-use window, a food-noise and body-support entry, and a plain CSV export bar." loading="lazy" decoding="async" width="1596" height="1141">
+      </div>
+    </div>
+  </article>
+
+  <div class="wrap">
+    <div class="exh-foot">
+      <span>Four projects &#183; All live &#183; Full detail inside each case study</span>
+      <span>Screenshots captured Aug 2026</span>
+    </div>
   </div>
 </section>
 
@@ -1333,7 +1872,7 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
       <button class="cs-close" data-close>Close</button>
     </div>
     <h3 id="cs-4-h">Helio</h3>
-    <div class="cs-meta"><span>Digital product</span><span>UX / UI / Product</span></div>
+    <div class="cs-meta"><span class="flagged">In-house AMRI product</span><span>Digital product</span><span>UX / UI / Product</span></div>
     <a class="cs-quick" href="https://www.gethelioapp.com/" target="_blank" rel="noopener noreferrer">View live site <span class="ext" aria-hidden="true">&#8599;</span><span class="sr-only"> — Helio (opens in a new tab)</span></a>
     <div class="cs-cols">
       <div>
@@ -1369,15 +1908,16 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 <section class="dark-sec" id="capabilities" aria-labelledby="caps-h">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">04 / WHAT WE HANDLE</span>
+      <span class="ch-mark"><span class="ch-no">04</span><span class="ch-label">What We Handle</span></span>
       <div>
-        <h2 id="caps-h">Four disciplines. One system.</h2>
+        <h2 id="caps-h"><span class="hln">Four disciplines.</span><span class="hln">One system.</span></h2>
         <p class="lede">Most digital problems aren't one problem. Brand, website, public presence and growth are one connected system — so we treat them that way.</p>
       </div>
     </div>
     <div class="caps">
       <div class="cap reveal">
-        <span class="eyebrow">Brand</span>
+        <span class="cap-idx">C&#8212;01</span>
+        <h3>Brand</h3>
         <ul>
           <li>Brand strategy</li>
           <li>Identity &amp; logo refinement</li>
@@ -1387,7 +1927,8 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
         </ul>
       </div>
       <div class="cap reveal d1">
-        <span class="eyebrow">Web</span>
+        <span class="cap-idx">C&#8212;02</span>
+        <h3>Web</h3>
         <ul>
           <li>Website strategy</li>
           <li>New websites &amp; redesigns</li>
@@ -1397,7 +1938,8 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
         </ul>
       </div>
       <div class="cap reveal d2">
-        <span class="eyebrow">Presence</span>
+        <span class="cap-idx">C&#8212;03</span>
+        <h3>Presence</h3>
         <ul>
           <li>Google Business Profile</li>
           <li>Facebook / Instagram setup</li>
@@ -1407,7 +1949,8 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
         </ul>
       </div>
       <div class="cap reveal d3">
-        <span class="eyebrow">Growth</span>
+        <span class="cap-idx">C&#8212;04</span>
+        <h3>Growth</h3>
         <ul>
           <li>SEO foundations</li>
           <li>Campaign landing pages</li>
@@ -1425,9 +1968,9 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 <section id="how-we-work" aria-labelledby="method-h" data-scrub="method">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">05 / HOW WE WORK</span>
+      <span class="ch-mark"><span class="ch-no">05</span><span class="ch-label">How We Work</span></span>
       <div>
-        <h2 id="method-h">Audit first. Recommend second.</h2>
+        <h2 id="method-h"><span class="hln">Audit first.</span><span class="hln">Recommend second.</span></h2>
         <p class="lede">Not every business needs a new logo, a new website or paid ads. Before anything is built, we find out what's actually there — then scope only what matters.</p>
       </div>
     </div>
@@ -1450,11 +1993,11 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
     <div class="sys-stage">
       <div class="wrap">
         <div class="sys-head">
-          <span class="num">06 / THE SYSTEM</span>
+          <span class="ch-mark"><span class="ch-no">06</span><span class="ch-label">The System</span></span>
           <p>Ask a growing business where its digital pieces live.</p>
         </div>
       </div>
-      <div class="wrap">
+      <div class="wrap sys-wrap-f">
         <div class="sys-field" role="img" aria-label="Scattered pieces of a typical business's digital infrastructure — domain at GoDaddy with an expired card on file, hosting somewhere else, email through a third provider, a Facebook page made by a former employee, a logo saved as FINAL_v7 in an unknown location, passwords nobody can find, a developer who no longer responds — aligning into one ordered register.">
           <div class="frag" style="--row:0;--sx:-9vw;--sy:3vh;--sr:-2.4deg"><span class="k">A</span><span class="fk">Domain</span><span class="fv">At GoDaddy, card expired</span></div>
           <div class="frag" style="--row:1;--sx:11vw;--sy:-4vh;--sr:1.8deg"><span class="k">B</span><span class="fk">Hosting</span><span class="fv">Somewhere else entirely</span></div>
@@ -1467,7 +2010,7 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
       </div>
       <div class="wrap">
         <div class="sys-close">
-          <h2 id="sys-h">One business. <em>It should feel like one system.</em><span class="dotr" aria-hidden="true"></span></h2>
+          <h2 id="sys-h"><span class="hln">One business.</span><em class="hln">It should feel like one system.<span class="dotr" aria-hidden="true"></span></em></h2>
           <p>Most companies don't have a website problem or a logo problem — they have a <b>system problem</b>. Pieces bought at different times, from different people, connected to nothing. We connect the pieces, fix what matters, <b>document everything, and hand it back properly.</b></p>
         </div>
       </div>
@@ -1475,12 +2018,31 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
   </div>
 </section>
 
-<!-- ================= 08 · OWNERSHIP ================= -->
+<!-- ================= 08 · OWNERSHIP — THE OXBLOOD FIELD =================
+     The page's one saturated moment, spent on the sentence a competitor finds
+     hardest to copy. Everything before and after stays ivory and ink.
+
+     OWNERSHIP · A/B — the field is the V2.4 direction and the default.
+     Add data-own="a" to this section to review the previous restrained
+     treatment side by side. Remove the hook once the field is signed off.
+====================================================================== -->
 <section class="own-band" id="ownership" aria-labelledby="own-h">
+  <span class="own-ghost" aria-hidden="true">AMRI</span>
   <div class="wrap">
+    <span class="ch-mark reveal"><span class="ch-no">07</span><span class="ch-label">Ownership</span></span>
+    <!-- Three rhetorical lines, locked in markup.
+         Under Clash this collapsed to "Your business. Your / accounts. Your
+         assets." — the one wrap the structure cannot survive, because the
+         whole point is three possessions listed one per line. It is not
+         left to a ch-width to get right. -->
+    <h2 id="own-h" class="reveal">
+      <span class="hln">Your business.</span>
+      <span class="hln">Your accounts.</span>
+      <span class="hln">Your assets.</span>
+    </h2>
     <div class="own-grid">
-      <h2 id="own-h" class="reveal">Your business. Your accounts. Your assets<span class="r">.</span></h2>
-      <p class="reveal d1">We build the system and make sure you understand what you own. Domains, profiles, files and business accounts belong to you — configured, tested, documented and transferred. We earn the ongoing relationship; we don't engineer it.</p>
+      <p class="reveal d1">We build the system and make sure you understand what you own. Domains, profiles, files and business accounts belong to you — <b>configured, tested, documented and transferred.</b></p>
+      <p class="reveal d2">We earn the ongoing relationship; we don't engineer it.</p>
     </div>
   </div>
 </section>
@@ -1490,6 +2052,10 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
      Never publish before written client approval. First slot reserved for
      Charles / Trademark Design once his approved copy is supplied.
      To activate: move this block into the page flow and remove the comment wrapper.
+     NOTE: chapter numbering is now sequential and visible at ~96px. Inserting this
+     section between Ownership (07) and About (08) means renumbering About to 09
+     and Start to 10, in both .ch-no and the mobile menu keys. Update the .num
+     span below to a .ch-mark to match the other chapters.
 
 <section id="words" aria-labelledby="words-h">
   <div class="wrap">
@@ -1514,8 +2080,8 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
   <div class="about-ghost" aria-hidden="true">AMRI</div>
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">07 / ABOUT</span>
-      <div><h2 id="about-h">Built around one observation.</h2></div>
+      <span class="ch-mark"><span class="ch-no">08</span><span class="ch-label">About</span></span>
+      <div><h2 id="about-h" class="bal">Built around one observation.</h2></div>
     </div>
     <div class="about-grid">
       <div class="about-copy reveal">
@@ -1524,11 +2090,14 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
         <p>So that's what we build: brand, web and digital infrastructure brought into <b>one professional system that finally reflects the business behind it</b> — designed carefully, documented completely, and handed back to the people it belongs to.</p>
       </div>
       <div class="reveal d1">
-        <p class="lede">We help businesses look as established online as they are in real life.</p>
+        <p class="pull">We help businesses look as established online as they are in real life.</p>
       </div>
     </div>
+    <!-- "Based · Atlanta, Georgia" removed: the dedicated Atlanta transition
+         band sits directly beneath this and says the same thing a few hundred
+         pixels later. The band keeps geography; this row keeps everything the
+         band does not cover. -->
     <div class="about-band reveal">
-      <span>Based <b>Atlanta, Georgia</b></span>
       <span>Structure <b>Founder-led</b></span>
       <span>Focus <b>Brand · Web · Presence · Growth</b></span>
       <span>Model <b>Consultation-led</b></span>
@@ -1548,12 +2117,37 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 <!-- ================= 12 · START (dark) ================= -->
 <section class="dark-sec" id="contact" aria-labelledby="contact-h">
   <div class="wrap">
+    <!-- The closing poster. The statement is lifted out of the two-column grid
+         so it can run at the scale it deserves; the conversion architecture
+         underneath it is untouched. -->
+    <div class="close-head reveal">
+      <span class="ch-mark"><span class="ch-no">09</span><span class="ch-label">Start</span></span>
+      <h2 id="contact-h"><span class="hln">You've already built the business.</span><span class="hln">Let's build what people see.</span></h2>
+    </div>
     <div class="contact-grid">
       <div class="contact-lede reveal">
-        <span class="num">08 / START</span>
-        <h2 id="contact-h" style="margin-top:22px">You've already built the business. Let's build what people see.</h2>
         <p class="sub">Tell us where the business is today. We'll take an honest look and tell you what we'd do — and what we wouldn't.</p>
         <p class="micro">No packages to choose from.<br>No obligation.<br>A conversation first, always.</p>
+
+        <!-- The form asks a lot before anyone has been told what follows it.
+             Three factual steps, no timing claims. There is deliberately no
+             response-time promise: no such standard has been confirmed, and an
+             invented one is a promise the business would have to keep. -->
+        <div class="next">
+          <h3>What happens next</h3>
+          <ol>
+            <li><span>We review what you sent — the business, the site, whatever already exists.</span></li>
+            <li><span>We reach out personally. A real reply from the person who read it.</span></li>
+            <li><span>If it looks like a fit, we schedule a conversation and recommend the next step.</span></li>
+          </ol>
+        </div>
+        <!-- INTERNAL · LAUNCH TODO: this address must match the form's data-mail.
+             Both currently use contact@amri-group.pro, which the README still
+             lists as UNCONFIRMED. Confirm it or change both together. -->
+        <div class="direct">
+          <span class="eyebrow">Prefer email?</span>
+          <a href="mailto:contact@amri-group.pro">contact@amri-group.pro</a>
+        </div>
       </div>
 
       <!-- INTERNAL · LAUNCH TODO: form endpoint not yet connected. Set data-endpoint
@@ -1642,21 +2236,22 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
         <h4>AMRI Group</h4>
         <ul>
           <li><a href="#work">Work</a></li>
-          <li><a href="#what-we-do">What We Do</a></li>
+          <li><a href="#capabilities">What We Do</a></li>
+          <li><a href="#situations">Where You Are</a></li>
           <li><a href="#how-we-work">How We Work</a></li>
           <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-      <nav class="foot-col" aria-label="Footer — capabilities">
-        <h4>Capabilities</h4>
+      <!-- The Capabilities column that used to sit here had four links that all
+           resolved to the same anchor — four ways to arrive in the same place.
+           Replaced with the thing a footer is actually used for. -->
+      <div class="foot-col">
+        <h4>Contact</h4>
         <ul>
-          <li><a href="#capabilities">Brand</a></li>
-          <li><a href="#capabilities">Web</a></li>
-          <li><a href="#capabilities">Presence</a></li>
-          <li><a href="#capabilities">Growth</a></li>
+          <li><a href="mailto:contact@amri-group.pro">contact@amri-group.pro</a></li>
+          <li><a href="#contact">Start a project</a></li>
         </ul>
-      </nav>
+      </div>
       <!-- INTERNAL · LAUNCH TODO: Social column intentionally omitted until real profile URLs exist.
            When ready, add a third .foot-col with Instagram / LinkedIn / Facebook. -->
     </div>
@@ -1688,7 +2283,6 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
 (function(){
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   /* ----- masthead scroll state ----- */
   var head = document.querySelector("header.masthead");
@@ -1816,7 +2410,8 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
   var sysTall = document.querySelector('[data-scrub="sys"]');
   var sysFrags = sysTall ? sysTall.querySelectorAll(".frag, .sys-close") : [];
   var steps = methodSec ? Array.prototype.slice.call(methodSec.querySelectorAll(".step")) : [];
-  var workSec = document.querySelector(".work-sec");
+  var exhHead = document.querySelector(".exh-head");
+  var walls = Array.prototype.slice.call(document.querySelectorAll("[data-wall]"));
   function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
   function easeInOut(t){ return t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2; }
   var ticking = false;
@@ -1841,11 +2436,18 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
       var e = easeInOut(p2);
       sysFrags.forEach(function(f){ f.style.setProperty("--sp", e.toFixed(4)); });
     }
-    if(workSec){
-      var r3 = workSec.getBoundingClientRect();
+    if(exhHead){
+      var r3 = exhHead.getBoundingClientRect();
       var p3 = clamp01((vh - r3.top) / (vh + r3.height));
-      workSec.style.setProperty("--gp", p3.toFixed(4));
+      exhHead.style.setProperty("--gp", p3.toFixed(4));
     }
+    /* the exhibition: each wall's image drifts against its own frame across
+       that wall's pass through the viewport. Off-screen walls are skipped. */
+    walls.forEach(function(w){
+      var rw = w.getBoundingClientRect();
+      if(rw.bottom < -80 || rw.top > vh + 80) return;
+      w.style.setProperty("--wp", clamp01((vh - rw.top) / (vh + rw.height)).toFixed(4));
+    });
   }
   function onScroll(){
     if(!ticking){ ticking = true; requestAnimationFrame(scrub); }
@@ -1861,49 +2463,32 @@ footer{background:var(--band);color:var(--band-fg);border-top:1px solid var(--li
     scrub();
   }
 
-  /* ----- project portals: tilt (fine pointers only) + overlays ----- */
-  var portals = document.querySelectorAll(".portal");
-  portals.forEach(function(card){
-    var inner = card.querySelector(".po-inner");
-    if(finePointer && !reduce){
-      var raf = null, rx = 0, ry = 0;
-      card.addEventListener("pointermove", function(e){
-        var b = inner.getBoundingClientRect();
-        var px = (e.clientX - b.left)/b.width - .5;
-        var py = (e.clientY - b.top)/b.height - .5;
-        ry = px * 4.5;         /* max ±2.25deg — deliberate, not a demo */
-        rx = -py * 3.5;
-        if(!raf){
-          raf = requestAnimationFrame(function(){
-            inner.style.setProperty("--rx", rx.toFixed(2)+"deg");
-            inner.style.setProperty("--ry", ry.toFixed(2)+"deg");
-            raf = null;
-          });
-        }
-      });
-      card.addEventListener("pointerleave", function(){
-        inner.style.setProperty("--rx","0deg");
-        inner.style.setProperty("--ry","0deg");
-      });
-    }
-    var hit = card.querySelector(".po-hit");
-    var dlg = document.getElementById(card.getAttribute("data-cs"));
-    if(hit && dlg){
-      hit.addEventListener("click", function(){
-        dlg.showModal();
-        document.body.classList.add("lock");
-      });
-      dlg.addEventListener("close", function(){
-        document.body.classList.remove("lock");
-      });
-      /* click on the dimmed backdrop closes */
-      dlg.addEventListener("click", function(e){
-        if(e.target === dlg) dlg.close();
-      });
-      dlg.querySelectorAll("[data-close]").forEach(function(btn){
-        btn.addEventListener("click", function(){ dlg.close(); });
-      });
-    }
+  /* ----- the exhibition walls: open the case study -----
+     The production overlay behaviour is preserved exactly — showModal for the
+     native focus trap and Escape handling, backdrop click to close, body lock.
+     What changed is the control: an invisible full-card hit layer became a
+     real, visible, labelled button, so the thing that opens a case study is
+     something a keyboard and a screen reader can both find. Focus is returned
+     to that button explicitly rather than relying on the dialog default. */
+  walls.forEach(function(w){
+    var dlg = document.getElementById(w.getAttribute("data-cs"));
+    var btn = w.querySelector("[data-open]");
+    if(!dlg || !btn) return;
+    btn.addEventListener("click", function(){
+      dlg.showModal();
+      document.body.classList.add("lock");
+    });
+    dlg.addEventListener("close", function(){
+      document.body.classList.remove("lock");
+      btn.focus();
+    });
+    /* click on the dimmed backdrop closes */
+    dlg.addEventListener("click", function(e){
+      if(e.target === dlg) dlg.close();
+    });
+    dlg.querySelectorAll("[data-close]").forEach(function(b){
+      b.addEventListener("click", function(){ dlg.close(); });
+    });
   });
 
   /* ----- consultative form ----- */

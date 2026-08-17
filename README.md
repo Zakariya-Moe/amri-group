@@ -17,6 +17,21 @@ themes with system preference support.
 Fonts are loaded from Fontshare (Switzer, Clash Grotesk) and Google Fonts
 (IBM Plex Mono). No font files are redistributed in this repository.
 
+> **Do not combine the two Fontshare requests.** They are two separate `<link>`
+> tags on purpose. A single combined request
+> (`?f[]=switzer@…&f[]=clash-grotesk@…`) returns Switzer only — Clash Grotesk
+> never enters `document.fonts` and every display heading silently falls back to
+> Switzer. That shipped undetected because the CSS still *says*
+> `font-family:"Clash Grotesk"`; only `document.fonts` reveals it. If you touch
+> the font links, verify with:
+>
+> ```js
+> [...document.fonts].map(f => f.family + ' ' + f.weight)
+> ```
+>
+> Clash Grotesk must appear in that list. `document.fonts.check()` is not a
+> valid test here — it returns `true` even when the face is absent.
+
 ---
 
 ## Local preview
@@ -68,7 +83,7 @@ amri-group/
     ├── social/
     │   └── og-image.jpg       # 1200x630 social card
     └── images/
-        ├── trademark/         # trademark-home / -detail / -mobile .webp
+        ├── trademark/         # -wall (exhibition) · -detail / -mobile (dialog) · -home (unused)
         ├── visionary/
         ├── linework/
         └── helio/
@@ -106,12 +121,62 @@ Unresolved items that must be handled before or at launch:
 - [ ] **`og:image` absolute URL** — the card exists at
       `/assets/social/og-image.jpg`, but most crawlers require an absolute URL.
       Update once the domain is confirmed.
-- [ ] **Business email** — currently `contact@amri-group.pro` (in the form's
-      `data-mail`). Confirm this is the production address.
+- [ ] **Business email** — `contact@amri-group.pro`. **Now published in three
+      places**, not just the form fallback: the form's `data-mail`, the
+      "Prefer email?" line in the contact section, and the footer Contact
+      column. Confirm the address or change all three together — search the
+      file for `amri-group.pro`. This is the most urgent open item, because a
+      wrong address is now a visible dead end rather than a silent one.
+
+- [ ] **Ownership A/B — temporary code to remove.** As of V2.4 the **oxblood
+      field is the default**: `section.own-band` with no attribute renders the
+      full saturated treatment (ivory on `--red` in light, on `--red-deep` in
+      dark, with the ghost AMRI wordmark in the field). The previous restrained
+      treatment is kept behind `data-own="a"` purely so the two can still be
+      compared on the real page:
+
+      ```js
+      document.querySelector('.own-band').setAttribute('data-own','a') // restrained
+      document.querySelector('.own-band').removeAttribute('data-own')  // field
+      ```
+
+      Once the field is signed off, delete the `.own-band[data-own="a"]` block
+      and the hook with it. Do not ship both.
+
+      Note the field tokens are scoped with `.own-band:not([data-own="a"])`
+      rather than overridden later. A custom property cannot be "reset to the
+      root value" — `--ink:initial` blanks it rather than restoring it — so the
+      restrained variant has to simply never receive them.
 - [ ] **Social profile URLs** — the footer social column is intentionally absent
       until real profiles exist. Do not add placeholder links.
 - [ ] **Analytics / Search Console** — not configured. No tracking script is
       present. Add one deliberately if wanted, and submit the sitemap.
+
+### Section anchors
+
+The nav label "What We Do" used to link to `#what-we-do`, which was the
+Launch / Rebuild / Grow section — not the capabilities section the label
+describes. Two things changed:
+
+| Section | Anchor | Reached from |
+|---|---|---|
+| Launch / Rebuild / Grow | `#situations` (was `#what-we-do`) | footer "Where You Are" |
+| Brand / Web / Presence / Growth | `#capabilities` | nav + footer "What We Do" |
+
+`#what-we-do` no longer exists. Nothing external is known to link to it, but if
+an old link turns up, point it at `#situations`.
+
+Chapter numbering is sequential and rendered at up to 120px, so the numbers are
+visible content rather than incidental labels: `01 The Gap` through `09 Start`.
+Inserting or removing a section means renumbering the `.ch-no` values after it.
+
+### Section spacing
+
+There is deliberately **no global section padding**. Each chapter sets its own
+`--sec-y`, so the page has tempo instead of pagination — the Gap is
+investigative and tight, How We Work is wide and procedural, Ownership is a
+poster, the Atlanta band is a single breath. Adding a section means choosing
+its own value rather than inheriting one.
 
 ### Never commit
 
@@ -123,8 +188,8 @@ function and supply it as an environment variable.
 
 ## Updating project imagery
 
-The four project screenshots in `assets/images/` were captured from the live
-client sites in **August 2026**:
+Every project image is a real screenshot of a live client site. None are
+mockups, renders or stock photography.
 
 | Project | Live site |
 |---|---|
@@ -133,11 +198,48 @@ client sites in **August 2026**:
 | Linework Studio | https://linework.studio/ |
 | Helio | https://www.gethelioapp.com/ |
 
-They are real screenshots, not mockups or stock imagery. When any of these sites
-ships a meaningful redesign, recapture that project's three images
-(`-home`, `-detail`, `-mobile`), keep the same filenames, and re-export as WebP
-at roughly the current dimensions so the existing `width`/`height` attributes
-stay accurate and no layout shift is introduced.
+There are two sets, and they do different jobs.
+
+### `-wall.webp` — the Selected Work exhibition (V2.4)
+
+One per project, and **the art direction lives in the capture, not in the CSS
+crop**. Each region was chosen for what that project actually proves, and
+clipped so nothing is chopped at an edge — no client hero headlines, no half
+CTA buttons, no stray text slivers:
+
+| File | What it shows | Ratio |
+|---|---|---|
+| `trademark-wall.webp` | the Our Work project grid — six completed jobs, each with a photograph and its service / scope / location | 1.011 |
+| `visionary-wall.webp` | the full-bleed terrace band — paver terrace, granite stair treads, boulder retaining walls, lit at dusk | 2.685 |
+| `linework-wall.webp` | the design-packet catalogue — four packets as floor plan, elevation and 3D view | 1.832 |
+| `helio-wall.webp` | three live interface surfaces and the CSV export bar | 1.399 |
+
+The wall frame is sized from the image's own ratio via `--ar` on `.wall-art`,
+so the picture is displayed as it was composed rather than squeezed into a
+frame and sliced by `object-fit:cover`. **`--ar` must sit on `.wall-art`, not
+on the `<img>`** — the spacer that sets the frame height is `.wall-art::after`,
+and a property declared on the image is inherited downward, never up to its
+parent. Getting that wrong silently falls back to the default ratio.
+
+`--arm` / `--zm` / `--opm` (also on `.wall-art`) are the phone framing: below
+900px each wall zooms into ONE legible piece of the same capture — a single
+project card, a single design packet, a single interface card — because a
+six-card grid rendered 390px wide is a texture, not evidence.
+
+If a site ships a redesign, recapture that region, keep the filename, and
+**update both the `width`/`height` attributes and `--ar`** so the frame still
+matches the picture.
+
+### `-detail.webp` / `-mobile.webp` — the case-study dialogs
+
+Unchanged. These are the two-up gallery inside each `<dialog class="cs">`.
+
+### `-home.webp` — currently unreferenced
+
+The original homepage captures. Nothing loads them since V2.4 replaced the
+project portals with the exhibition, so they cost nothing at runtime. They are
+kept as the record of each site's homepage at capture time. Delete them if you
+want the repository smaller; nothing will break.
 
 Never substitute stock photography, and never fabricate a screenshot of work
 that does not exist.
